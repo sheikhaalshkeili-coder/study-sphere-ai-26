@@ -5,13 +5,21 @@ export const Route = createFileRoute("/app")({
   component: AppShell,
 });
 
-const tabs = [
+type Tab = {
+  to: "/app" | "/app/planner" | "/app/ai" | "/app/study" | "/app/profile";
+  label: string;
+  icon: typeof Home;
+  exact?: boolean;
+  primary?: boolean;
+};
+
+const tabs: Tab[] = [
   { to: "/app", label: "Home", icon: Home, exact: true },
   { to: "/app/planner", label: "Planner", icon: CalendarDays },
   { to: "/app/ai", label: "AI", icon: Sparkles, primary: true },
   { to: "/app/study", label: "Study", icon: BookOpen },
   { to: "/app/profile", label: "Profile", icon: User },
-] as const;
+];
 
 function AppShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
