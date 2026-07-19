@@ -14,6 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          done: boolean
+          due_at: string | null
+          id: string
+          notes: string | null
+          priority: string
+          subject: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          done?: boolean
+          due_at?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          subject?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          done?: boolean
+          due_at?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          subject?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          color: string
+          created_at: string
+          day_of_week: number | null
+          end_time: string | null
+          id: string
+          room: string | null
+          start_time: string | null
+          subject: string
+          teacher: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          day_of_week?: number | null
+          end_time?: string | null
+          id?: string
+          room?: string | null
+          start_time?: string | null
+          subject: string
+          teacher?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          day_of_week?: number | null
+          end_time?: string | null
+          id?: string
+          room?: string | null
+          start_time?: string | null
+          subject?: string
+          teacher?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      exams: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          exam_at: string
+          id: string
+          notes: string | null
+          subject: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          exam_at: string
+          id?: string
+          notes?: string | null
+          subject?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          exam_at?: string
+          id?: string
+          notes?: string | null
+          subject?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exams_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
