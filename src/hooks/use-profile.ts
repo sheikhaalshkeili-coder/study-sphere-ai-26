@@ -7,7 +7,7 @@ export type Profile = {
   education_level: "high_school" | "university" | null;
   grade_year: string | null;
   school_name: string | null;
-  gcal_connected: boolean;
+  classroom_connected: boolean;
 };
 
 export function useProfile() {
@@ -21,7 +21,7 @@ export function useProfile() {
     setEmail(userData.user.email ?? null);
     const { data } = await supabase
       .from("profiles")
-      .select("id, full_name, education_level, grade_year, school_name, gcal_connected")
+      .select("id, full_name, education_level, grade_year, school_name, classroom_connected")
       .eq("id", userData.user.id)
       .maybeSingle();
     setProfile((data as Profile | null) ?? null);
