@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Settings, Award, Flame, Trophy, Bell, Moon, ChevronRight,
   Heart, GraduationCap, Target, LogOut, Sparkles,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/app/profile")({
   component: Profile,
@@ -12,10 +14,24 @@ export const Route = createFileRoute("/app/profile")({
 function Profile() {
   const [dark, setDark] = useState(false);
   const [notifs, setNotifs] = useState(true);
+  const { profile, email } = useProfile();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    navigate({ to: "/", replace: true });
+  }
+
+  const name = profile?.full_name || email || "Student";
+  const initial = (profile?.full_name || email || "S").trim().charAt(0).toUpperCase();
+  const levelLabel = profile?.education_level === "university" ? "University" : "High school";
+  const gradeLabel = profile?.grade_year ? `${profile.grade_year} · ` : "";
+  const schoolLabel = profile?.school_name || levelLabel;
+
 
   return (
     <div className="px-5 pt-6">
@@ -30,11 +46,12 @@ function Profile() {
       <div className="mt-5 overflow-hidden rounded-3xl bg-gradient-brand p-5 text-white shadow-glow">
         <div className="flex items-center gap-4">
           <div className="grid size-16 place-items-center rounded-2xl bg-white/20 backdrop-blur">
-            <span className="font-display text-2xl font-bold">A</span>
+            <span className="font-display text-2xl font-bold">{initial}</span>
           </div>
           <div className="flex-1">
-            <p className="font-display text-lg font-bold">Alex Chen</p>
-            <p className="text-xs opacity-80">Grade 11 · Lincoln High</p>
+            <p className="font-display text-lg font-bold">{name}</p>
+            <p className="text-xs opacity-80">{gradeLabel}{schoolLabel}</p>
+
             <div className="mt-1.5 flex items-center gap-1.5 text-xs">
               <Sparkles className="size-3.5" />
               <span className="font-semibold">Level 7</span>
@@ -132,9 +149,10 @@ function Profile() {
         </div>
       </div>
 
-      <Link to="/" className="mt-6 flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-semibold text-destructive shadow-soft">
+      <button onClick={handleSignOut} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-semibold text-destructive shadow-soft">
         <LogOut className="size-4" /> Sign out
-      </Link>
+      </button>
+
     </div>
   );
 }

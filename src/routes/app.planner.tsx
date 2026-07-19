@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Check, BookOpen, CalendarDays, AlertCircle } from "lucide-react";
+import { Plus, Check, BookOpen, CalendarDays, AlertCircle, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
+
 
 export const Route = createFileRoute("/app/planner")({
   component: Planner,
@@ -29,6 +32,19 @@ const priorityStyle = {
 function Planner() {
   const [filter, setFilter] = useState<Filter>("Today");
   const [items, setItems] = useState(initial);
+  const { profile, reload } = useProfile();
+  const [syncing, setSyncing] = useState(false);
+  const connected = !!profile?.gcal_connected;
+
+  async function toggleGcal() {
+    if (!profile) return;
+    setSyncing(true);
+    // Simulated OAuth handshake — flip flag in DB.
+    await new Promise((r) => setTimeout(r, connected ? 300 : 900));
+    await supabase.from("profiles").update({ gcal_connected: !connected }).eq("id", profile.id);
+    await reload();
+    setSyncing(false);
+  }
 
   const shown = items.filter((i) => i.bucket === filter);
 
@@ -43,6 +59,44 @@ function Planner() {
           <Plus className="size-5" strokeWidth={2.5} />
         </button>
       </div>
+
+      {/* Google Calendar integration (mock) */}
+      <div className={`mt-5 overflow-hidden rounded-3xl p-4 shadow-soft transition ${connected ? "bg-gradient-brand text-white shadow-glow" : "bg-card"}`}>
+        <div className="flex items-center gap-3">
+          <div className={`grid size-11 place-items-center rounded-2xl ${connected ? "bg-white/20 backdrop-blur" : "bg-accent"}`}>
+            <GoogleCalIcon />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold">Google Calendar</p>
+            <p className={`text-xs ${connected ? "opacity-80" : "text-muted-foreground"}`}>
+              {connected ? "Synced · 6 events this week" : "Sync classes, reminders & exams"}
+            </p>
+          </div>
+          <button
+            onClick={toggleGcal}
+            disabled={syncing}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-soft disabled:opacity-70 ${connected ? "bg-white/20 text-white" : "bg-foreground text-background"}`}
+          >
+            {syncing ? <Loader2 className="size-3.5 animate-spin" /> : connected ? "Connected" : "Connect"}
+          </button>
+        </div>
+        {connected && (
+          <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] font-semibold">
+            {[
+              { t: "9:00", s: "Biology" },
+              { t: "11:00", s: "Calculus" },
+              { t: "14:00", s: "History" },
+            ].map((e) => (
+              <div key={e.s} className="rounded-2xl bg-white/15 p-2 backdrop-blur">
+                <p className="opacity-80">{e.t}</p>
+                <p>{e.s}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+
 
       {/* Mini month strip */}
       <div className="mt-5 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -145,3 +199,13 @@ function Planner() {
     </div>
   );
 }
+
+function GoogleCalIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-5" fill="none">
+      <rect x="3" y="4" width="18" height="17" rx="3" stroke="currentColor" strokeWidth="2" />
+      <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
