@@ -18,6 +18,8 @@ const starters = [
 ];
 
 function AIChat() {
+  const { profile } = useProfile();
+  const firstName = profile?.full_name?.split(" ")[0] || "there";
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
 
