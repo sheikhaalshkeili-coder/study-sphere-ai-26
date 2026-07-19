@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Send, Sparkles, BookOpen, ListChecks, FileText, Lightbulb, Brain } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/app/ai")({
   component: AIChat,
@@ -17,6 +18,8 @@ const starters = [
 ];
 
 function AIChat() {
+  const { profile } = useProfile();
+  const firstName = profile?.full_name?.split(" ")[0] || "there";
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
 
@@ -50,7 +53,7 @@ function AIChat() {
           <div>
             <div className="rounded-3xl bg-gradient-soft p-5">
               <p className="text-sm leading-relaxed">
-                Hi Alex! 👋 I can help with homework, explain concepts, generate flashcards, quiz you, or build a study plan. What would you like to work on?
+                Hi {firstName}! 👋 I can help with homework, explain concepts, generate flashcards, quiz you, or build a study plan. What would you like to work on?
               </p>
             </div>
             <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Try one of these</p>
