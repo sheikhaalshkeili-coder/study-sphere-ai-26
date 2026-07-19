@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles RENAME COLUMN gcal_connected TO classroom_connected;

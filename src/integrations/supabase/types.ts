@@ -152,34 +152,34 @@ export type Database = {
       }
       profiles: {
         Row: {
+          classroom_connected: boolean
           created_at: string
           education_level: Database["public"]["Enums"]["education_level"] | null
           full_name: string
-          gcal_connected: boolean
           grade_year: string | null
           id: string
           school_name: string | null
           updated_at: string
         }
         Insert: {
+          classroom_connected?: boolean
           created_at?: string
           education_level?:
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
-          gcal_connected?: boolean
           grade_year?: string | null
           id: string
           school_name?: string | null
           updated_at?: string
         }
         Update: {
+          classroom_connected?: boolean
           created_at?: string
           education_level?:
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
-          gcal_connected?: boolean
           grade_year?: string | null
           id?: string
           school_name?: string | null
