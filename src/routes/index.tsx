@@ -8,8 +8,8 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "StudySphere AI — Your all-in-one student companion" },
-      { name: "description", content: "Plan homework, study smarter with AI, and ace exams — all in one polished app." },
+      { title: "StudySphere  - Your all-in-one student companion" },
+      { name: "description", content: "Plan homework, study smarter with AI, and ace exams all in one polished app." },
     ],
   }),
   component: Welcome,
