@@ -7,7 +7,7 @@ export type Profile = {
   education_level: "high_school" | "university" | null;
   grade_year: string | null;
   school_name: string | null;
-  gcal_connected: boolean;
+  classroom_connected: boolean;
 };
 
 export function useProfile() {
