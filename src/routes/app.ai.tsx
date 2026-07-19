@@ -53,7 +53,7 @@ function AIChat() {
           <div>
             <div className="rounded-3xl bg-gradient-soft p-5">
               <p className="text-sm leading-relaxed">
-                Hi Alex! 👋 I can help with homework, explain concepts, generate flashcards, quiz you, or build a study plan. What would you like to work on?
+                Hi {firstName}! 👋 I can help with homework, explain concepts, generate flashcards, quiz you, or build a study plan. What would you like to work on?
               </p>
             </div>
             <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Try one of these</p>
