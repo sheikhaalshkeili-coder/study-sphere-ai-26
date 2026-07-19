@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Send, Sparkles, BookOpen, ListChecks, FileText, Lightbulb, Brain } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/app/ai")({
   component: AIChat,
