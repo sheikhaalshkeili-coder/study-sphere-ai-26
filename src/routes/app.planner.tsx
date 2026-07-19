@@ -34,14 +34,13 @@ function Planner() {
   const [items, setItems] = useState(initial);
   const { profile, reload } = useProfile();
   const [syncing, setSyncing] = useState(false);
-  const connected = !!profile?.gcal_connected;
+  const connected = !!profile?.classroom_connected;
 
-  async function toggleGcal() {
+  async function toggleClassroom() {
     if (!profile) return;
     setSyncing(true);
-    // Simulated OAuth handshake — flip flag in DB.
     await new Promise((r) => setTimeout(r, connected ? 300 : 900));
-    await supabase.from("profiles").update({ gcal_connected: !connected }).eq("id", profile.id);
+    await supabase.from("profiles").update({ classroom_connected: !connected }).eq("id", profile.id);
     await reload();
     setSyncing(false);
   }
@@ -60,20 +59,20 @@ function Planner() {
         </button>
       </div>
 
-      {/* Google Calendar integration (mock) */}
+      {/* Google Classroom integration */}
       <div className={`mt-5 overflow-hidden rounded-3xl p-4 shadow-soft transition ${connected ? "bg-gradient-brand text-white shadow-glow" : "bg-card"}`}>
         <div className="flex items-center gap-3">
           <div className={`grid size-11 place-items-center rounded-2xl ${connected ? "bg-white/20 backdrop-blur" : "bg-accent"}`}>
-            <GoogleCalIcon />
+            <ClassroomIcon />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-semibold">Google Calendar</p>
+            <p className="text-sm font-semibold">Google Classroom</p>
             <p className={`text-xs ${connected ? "opacity-80" : "text-muted-foreground"}`}>
-              {connected ? "Synced · 6 events this week" : "Sync classes, reminders & exams"}
+              {connected ? "Synced · 4 courses, 8 assignments" : "Auto-import assignments & announcements"}
             </p>
           </div>
           <button
-            onClick={toggleGcal}
+            onClick={toggleClassroom}
             disabled={syncing}
             className={`rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-soft disabled:opacity-70 ${connected ? "bg-white/20 text-white" : "bg-foreground text-background"}`}
           >
@@ -83,18 +82,21 @@ function Planner() {
         {connected && (
           <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] font-semibold">
             {[
-              { t: "9:00", s: "Biology" },
-              { t: "11:00", s: "Calculus" },
-              { t: "14:00", s: "History" },
+              { c: "Biology", t: "Lab report" },
+              { c: "Calculus", t: "PSet 12" },
+              { c: "History", t: "WWII essay" },
             ].map((e) => (
-              <div key={e.s} className="rounded-2xl bg-white/15 p-2 backdrop-blur">
-                <p className="opacity-80">{e.t}</p>
-                <p>{e.s}</p>
+              <div key={e.c} className="rounded-2xl bg-white/15 p-2 backdrop-blur">
+                <p className="opacity-80">{e.c}</p>
+                <p>{e.t}</p>
               </div>
             ))}
           </div>
         )}
       </div>
+
+
+
 
 
 
