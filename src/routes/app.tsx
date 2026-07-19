@@ -1,9 +1,16 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { Home, CalendarDays, Sparkles, BookOpen, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) throw redirect({ to: "/auth" });
+  },
   component: AppShell,
 });
+
 
 type Tab = {
   to: "/app" | "/app/planner" | "/app/ai" | "/app/study" | "/app/profile";

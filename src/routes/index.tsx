@@ -1,7 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, BookOpen, Brain, Timer, ArrowRight, Apple, Mail } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Sparkles, Brain, Timer, ArrowRight, Apple, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "StudySphere AI — Your all-in-one student companion" },
@@ -11,9 +15,29 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
+
 function Welcome() {
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/app" });
+    });
+  }, [navigate]);
+
+  async function handleGoogle() {
+    setBusy(true);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin + "/app",
+    });
+    if (result.error || !result.redirected) setBusy(false);
+    if (!result.error && !result.redirected) navigate({ to: "/app" });
+  }
+
   return (
     <main className="min-h-screen bg-gradient-soft">
+
       <div className="mx-auto flex min-h-screen max-w-md flex-col px-6 pt-14 pb-8">
         {/* Logo mark */}
         <div className="flex items-center gap-2">
@@ -76,23 +100,32 @@ function Welcome() {
 
         <div className="mt-auto space-y-2.5 pt-8">
           <Link
-            to="/app"
+            to="/auth"
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-brand px-5 py-4 text-sm font-semibold text-white shadow-glow transition active:scale-[0.98]"
           >
             Get started
             <ArrowRight className="size-4" />
           </Link>
-          <button className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3.5 text-sm font-semibold shadow-soft active:scale-[0.98]">
+          <button
+            onClick={handleGoogle}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3.5 text-sm font-semibold shadow-soft active:scale-[0.98] disabled:opacity-60"
+          >
             <GoogleIcon /> Continue with Google
           </button>
-          <button className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3.5 text-sm font-semibold shadow-soft active:scale-[0.98]">
+          <button
+            disabled
+            title="Coming soon"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3.5 text-sm font-semibold shadow-soft opacity-60"
+          >
             <Apple className="size-4 fill-current" /> Continue with Apple
           </button>
-          <Link to="/app" className="flex w-full items-center justify-center gap-2 py-2 text-xs font-medium text-muted-foreground">
+          <Link to="/auth" className="flex w-full items-center justify-center gap-2 py-2 text-xs font-medium text-muted-foreground">
             <Mail className="size-3.5" /> Sign in with email
           </Link>
         </div>
       </div>
+
     </main>
   );
 }

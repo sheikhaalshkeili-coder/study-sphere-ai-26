@@ -3,10 +3,12 @@ import {
   Sparkles, Brain, BookOpen, Timer, ScanLine, CalendarDays,
   Flame, GraduationCap, Clock, ChevronRight, Bell, Trophy,
 } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/app/")({
   component: Dashboard,
 });
+
 
 const today = new Date().toLocaleDateString("en-US", {
   weekday: "long", month: "long", day: "numeric",
@@ -28,6 +30,8 @@ const exams = [
 ];
 
 function Dashboard() {
+  const { profile } = useProfile();
+  const firstName = (profile?.full_name || "").trim().split(" ")[0] || "there";
   return (
     <div className="px-5 pt-6">
       {/* Header */}
@@ -35,9 +39,10 @@ function Dashboard() {
         <div>
           <p className="text-xs font-medium text-muted-foreground">{today}</p>
           <h1 className="mt-1 font-display text-2xl font-bold">
-            Hi, Alex <span className="inline-block">👋</span>
+            Hi, {firstName} <span className="inline-block">👋</span>
           </h1>
         </div>
+
         <button className="relative grid size-11 place-items-center rounded-2xl border border-border bg-card shadow-soft">
           <Bell className="size-5" />
           <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-destructive" />
