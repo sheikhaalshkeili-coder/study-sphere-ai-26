@@ -25,6 +25,7 @@ export type Database = {
           priority: string
           subject: string | null
           title: string
+          type: string
           updated_at: string
           user_id: string
         }
@@ -38,6 +39,7 @@ export type Database = {
           priority?: string
           subject?: string | null
           title: string
+          type?: string
           updated_at?: string
           user_id: string
         }
@@ -51,6 +53,7 @@ export type Database = {
           priority?: string
           subject?: string | null
           title?: string
+          type?: string
           updated_at?: string
           user_id?: string
         }
