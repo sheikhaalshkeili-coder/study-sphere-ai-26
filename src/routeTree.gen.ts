@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppStudyRouteImport } from './routes/app.study'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
+import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAiRouteImport } from './routes/app.ai'
 
 const AuthRoute = AuthRouteImport.update({
@@ -53,6 +54,11 @@ const AppPlannerRoute = AppPlannerRouteImport.update({
   path: '/planner',
   getParentRoute: () => AppRoute,
 } as any)
+const AppClassesRoute = AppClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAiRoute = AppAiRouteImport.update({
   id: '/ai',
   path: '/ai',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/app/ai': typeof AppAiRoute
+  '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app/ai': typeof AppAiRoute
+  '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/app/ai': typeof AppAiRoute
+  '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/app/ai'
+    | '/app/classes'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/app/ai'
+    | '/app/classes'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/app/ai'
+    | '/app/classes'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -178,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPlannerRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/classes': {
+      id: '/app/classes'
+      path: '/classes'
+      fullPath: '/app/classes'
+      preLoaderRoute: typeof AppClassesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/ai': {
       id: '/app/ai'
       path: '/ai'
@@ -190,6 +209,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAiRoute: typeof AppAiRoute
+  AppClassesRoute: typeof AppClassesRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
   AppStudyRoute: typeof AppStudyRoute
@@ -198,6 +218,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAiRoute: AppAiRoute,
+  AppClassesRoute: AppClassesRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
   AppStudyRoute: AppStudyRoute,
