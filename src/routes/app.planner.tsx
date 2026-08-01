@@ -368,7 +368,7 @@ function Planner() {
               </button>
               <button
                 type="submit"
-                disabled={save.isPending}
+                disabled={save.isPending || !draftValid}
                 className="flex-1 rounded-full bg-gradient-brand py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
               >
                 {save.isPending ? "Saving…" : "Add"}
