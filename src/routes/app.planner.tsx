@@ -115,6 +115,9 @@ function Planner() {
 
   const shown = rows.filter((r) => bucketFor(r.date, r.done) === filter);
   const loading = la || le;
+  const draftValid =
+    !!draft && draft.title.trim().length > 0 && (draft.kind !== "exam" || draft.due_at.length > 0);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
