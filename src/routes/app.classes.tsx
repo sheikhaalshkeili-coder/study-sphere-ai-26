@@ -10,6 +10,14 @@ import {
 import { CLASS_COLORS, DAYS, colorOf, formatTime } from "@/lib/schedule";
 
 export const Route = createFileRoute("/app/classes")({
+  head: () => ({
+    meta: [
+      { title: "My classes — StudySphere" },
+      { name: "description", content: "Build your real timetable: subjects, teachers, rooms and class times." },
+      { property: "og:title", content: "My classes — StudySphere" },
+      { property: "og:description", content: "Build your real timetable: subjects, teachers, rooms and class times." },
+    ],
+  }),
   component: ClassesPage,
 });
 
@@ -39,6 +47,7 @@ function ClassesPage() {
   const save = useSaveClass();
   const remove = useDeleteClass();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const draftValid = !!draft && draft.subject.trim().length > 0;
 
   function openEdit(c: ClassRow) {
     setDraft({
@@ -103,7 +112,7 @@ function ClassesPage() {
         <div className="mt-6 rounded-3xl border border-dashed border-border p-8 text-center">
           <GraduationCap className="mx-auto size-8 text-muted-foreground" />
           <p className="mt-2 text-sm font-semibold">No classes yet</p>
-          <p className="text-xs text-muted-foreground">Add your first class to build your timetable.</p>
+          <p className="text-xs text-muted-foreground">Add your first class to build your timetable — everything else in StudySphere (planner, dashboard) links back to these.</p>
           <button
             onClick={() => setDraft(emptyDraft)}
             className="mt-4 rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glow"
@@ -232,7 +241,7 @@ function ClassesPage() {
               </button>
               <button
                 type="submit"
-                disabled={save.isPending}
+                disabled={save.isPending || !draftValid}
                 className="flex-1 rounded-full bg-gradient-brand py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
               >
                 {save.isPending ? "Saving…" : draft.id ? "Save changes" : "Add class"}
@@ -257,10 +266,10 @@ function ClassCard({ c, onEdit, onDelete }: { c: ClassRow; onEdit: () => void; o
             .join(" · ") || "No details yet"}
         </p>
       </div>
-      <button onClick={onEdit} aria-label={`Edit ${c.subject}`} className="grid size-9 place-items-center rounded-xl bg-accent">
+      <button onClick={onEdit} aria-label={`Edit ${c.subject}`} className="grid size-9 place-items-center rounded-3xl bg-accent">
         <Pencil className="size-4 text-primary" />
       </button>
-      <button onClick={onDelete} aria-label={`Delete ${c.subject}`} className="grid size-9 place-items-center rounded-xl bg-destructive/10">
+      <button onClick={onDelete} aria-label={`Delete ${c.subject}`} className="grid size-9 place-items-center rounded-3xl bg-destructive/10">
         <Trash2 className="size-4 text-destructive" />
       </button>
     </div>

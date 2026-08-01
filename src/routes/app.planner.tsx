@@ -244,7 +244,7 @@ function Planner() {
               <button
                 aria-label={`Delete ${i.title}`}
                 onClick={() => remove.mutate({ id: i.id, kind: i.kind })}
-                className="grid size-9 shrink-0 place-items-center rounded-xl bg-destructive/10"
+                className="grid size-9 shrink-0 place-items-center rounded-3xl bg-destructive/10"
               >
                 <Trash2 className="size-4 text-destructive" />
               </button>
