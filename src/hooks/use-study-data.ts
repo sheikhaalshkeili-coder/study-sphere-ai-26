@@ -123,16 +123,33 @@ export function useDeleteClass() {
   const invalidate = useInvalidate(["classes", "assignments", "exams"]);
   return useMutation({
     mutationFn: async (id: string) => {
+      const { data: snapshot } = await supabase.from("classes").select("*").eq("id", id).maybeSingle();
       const { error } = await supabase.from("classes").delete().eq("id", id);
       if (error) throw error;
+      return snapshot as Record<string, unknown> | null;
     },
-    onSuccess: () => {
+    onSuccess: (snapshot) => {
       invalidate();
-      toast.success("Class deleted");
+      toast.success("Class deleted", {
+        action: snapshot
+          ? {
+              label: "Undo",
+              onClick: async () => {
+                const { error } = await supabase.from("classes").insert(snapshot as never);
+                if (error) toast.error("Couldn't restore the class");
+                else {
+                  invalidate();
+                  toast.success("Class restored");
+                }
+              },
+            }
+          : undefined,
+      });
     },
     onError: (e: Error) => toast.error(e.message || "Couldn't delete the class"),
   });
 }
+
 
 export type TaskInput = {
   id?: string;
