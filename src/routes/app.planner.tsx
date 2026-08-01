@@ -20,8 +20,17 @@ import {
 } from "@/lib/schedule";
 
 export const Route = createFileRoute("/app/planner")({
+  head: () => ({
+    meta: [
+      { title: "Planner — StudySphere" },
+      { name: "description", content: "Track homework, quizzes, projects and exams with real due dates." },
+      { property: "og:title", content: "Planner — StudySphere" },
+      { property: "og:description", content: "Track homework, quizzes, projects and exams with real due dates." },
+    ],
+  }),
   component: Planner,
 });
+
 
 type Row = {
   id: string;
