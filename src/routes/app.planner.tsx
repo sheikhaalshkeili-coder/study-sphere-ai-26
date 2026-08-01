@@ -194,12 +194,25 @@ function Planner() {
           {shown.length === 0 && (
             <div className="rounded-3xl border border-dashed border-border p-8 text-center">
               <CalendarDays className="mx-auto size-8 text-muted-foreground" />
-              <p className="mt-2 text-sm font-semibold">Nothing here!</p>
-              <p className="text-xs text-muted-foreground">
-                {rows.length === 0 ? "Tap + to add your first task." : "You're all caught up 🎉"}
+              <p className="mt-2 text-sm font-semibold">
+                {rows.length === 0 ? "Your planner is empty" : "Nothing here!"}
               </p>
+              <p className="text-xs text-muted-foreground">
+                {rows.length === 0
+                  ? "Tap the + button top-right to add homework, a quiz, a project or an exam. Add your classes first to link work to them."
+                  : "You're all caught up 🎉"}
+              </p>
+              {rows.length === 0 && (
+                <Link
+                  to="/app/classes"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glow"
+                >
+                  <GraduationCap className="size-3.5" /> Add my classes
+                </Link>
+              )}
             </div>
           )}
+
           {shown.map((i) => (
             <div key={`${i.kind}-${i.id}`} className="flex items-center gap-3 rounded-3xl bg-card p-3.5 shadow-soft">
               {i.kind === "task" ? (
