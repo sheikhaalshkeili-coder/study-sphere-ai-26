@@ -18,6 +18,7 @@ import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAiRouteImport } from './routes/app.ai'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -64,11 +65,17 @@ const AppAiRoute = AppAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/planner': typeof AppPlannerRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
     | '/app/planner'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
     | '/app/planner'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
     | '/app/planner'
@@ -137,6 +149,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -231,17 +251,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
