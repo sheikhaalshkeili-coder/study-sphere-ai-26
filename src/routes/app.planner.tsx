@@ -135,14 +135,14 @@ function Planner() {
           <Link
             to="/app/classes"
             aria-label="My classes"
-            className="grid size-11 place-items-center rounded-2xl bg-card shadow-soft active:scale-95"
+            className="grid size-11 place-items-center rounded-3xl bg-card shadow-soft active:scale-95"
           >
             <LayoutList className="size-5 text-primary" />
           </Link>
           <button
             onClick={() => setDraft(emptyDraft)}
             aria-label="Add item"
-            className="grid size-11 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow active:scale-95"
+            className="grid size-11 place-items-center rounded-3xl bg-gradient-brand text-white shadow-glow active:scale-95"
           >
             <Plus className="size-5" strokeWidth={2.5} />
           </button>
@@ -229,7 +229,7 @@ function Planner() {
       )}
 
       {filter === "Overdue" && shown.length > 0 && (
-        <div className="mt-4 flex items-start gap-2 rounded-2xl bg-destructive/10 p-3">
+        <div className="mt-4 flex items-start gap-2 rounded-3xl bg-destructive/10 p-3">
           <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
           <p className="text-xs text-destructive">
             You have overdue work. Tap the AI button to auto-generate a catch-up plan.
@@ -273,14 +273,14 @@ function Planner() {
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
               placeholder="Titration lab report"
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             <label className="mt-3 block text-xs font-semibold">Class</label>
             <select
               value={draft.class_id}
               onChange={(e) => setDraft({ ...draft, class_id: e.target.value })}
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             >
               <option value="">No class</option>
               {classes.map((c) => (
@@ -301,7 +301,7 @@ function Planner() {
               required={draft.kind === "exam"}
               value={draft.due_at}
               onChange={(e) => setDraft({ ...draft, due_at: e.target.value })}
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             {draft.kind === "task" && (
@@ -313,7 +313,7 @@ function Planner() {
                       key={p}
                       type="button"
                       onClick={() => setDraft({ ...draft, priority: p })}
-                      className={`flex-1 rounded-2xl py-2.5 text-xs font-semibold capitalize transition ${
+                      className={`flex-1 rounded-3xl py-2.5 text-xs font-semibold capitalize transition ${
                         draft.priority === p ? "bg-foreground text-background" : "bg-card text-muted-foreground shadow-soft"
                       }`}
                     >
@@ -330,7 +330,7 @@ function Planner() {
               value={draft.notes}
               onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
               placeholder="Optional details"
-              className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full resize-none rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             <div className="mt-5 flex gap-2">

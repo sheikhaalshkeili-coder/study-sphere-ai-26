@@ -75,7 +75,7 @@ function ClassesPage() {
           <Link
             to="/app/planner"
             aria-label="Back to planner"
-            className="grid size-9 place-items-center rounded-2xl bg-card shadow-soft active:scale-95"
+            className="grid size-9 place-items-center rounded-3xl bg-card shadow-soft active:scale-95"
           >
             <ArrowLeft className="size-4" />
           </Link>
@@ -87,7 +87,7 @@ function ClassesPage() {
         <button
           onClick={() => setDraft(emptyDraft)}
           aria-label="Add class"
-          className="grid size-11 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow active:scale-95"
+          className="grid size-11 place-items-center rounded-3xl bg-gradient-brand text-white shadow-glow active:scale-95"
         >
           <Plus className="size-5" strokeWidth={2.5} />
         </button>
@@ -152,7 +152,7 @@ function ClassesPage() {
               value={draft.subject}
               onChange={(e) => setDraft({ ...draft, subject: e.target.value })}
               placeholder="Biology"
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             <div className="mt-3 grid grid-cols-2 gap-3">
@@ -162,7 +162,7 @@ function ClassesPage() {
                   value={draft.teacher}
                   onChange={(e) => setDraft({ ...draft, teacher: e.target.value })}
                   placeholder="Ms. Rivera"
-                  className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+                  className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
                 />
               </div>
               <div>
@@ -171,7 +171,7 @@ function ClassesPage() {
                   value={draft.room}
                   onChange={(e) => setDraft({ ...draft, room: e.target.value })}
                   placeholder="Lab 2"
-                  className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+                  className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -180,7 +180,7 @@ function ClassesPage() {
             <select
               value={draft.day_of_week}
               onChange={(e) => setDraft({ ...draft, day_of_week: Number(e.target.value) })}
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             >
               {DAYS.map((d, i) => (
                 <option key={d} value={i}>{d}</option>
@@ -194,7 +194,7 @@ function ClassesPage() {
                   type="time"
                   value={draft.start_time}
                   onChange={(e) => setDraft({ ...draft, start_time: e.target.value })}
-                  className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+                  className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
                 />
               </div>
               <div>
@@ -203,7 +203,7 @@ function ClassesPage() {
                   type="time"
                   value={draft.end_time}
                   onChange={(e) => setDraft({ ...draft, end_time: e.target.value })}
-                  className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+                  className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
                 />
               </div>
             </div>

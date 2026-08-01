@@ -67,7 +67,7 @@ function Dashboard() {
           </h1>
         </div>
 
-        <button className="relative grid size-11 place-items-center rounded-2xl border border-border bg-card shadow-soft">
+        <button className="relative grid size-11 place-items-center rounded-3xl border border-border bg-card shadow-soft">
           <Bell className="size-5" />
         </button>
       </div>
@@ -164,8 +164,8 @@ function Dashboard() {
           ) : (
             <div className="mt-3 space-y-2.5">
               {upcoming.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 rounded-2xl bg-card p-3.5 shadow-soft">
-                  <div className="grid size-11 place-items-center rounded-2xl bg-accent">
+                <div key={a.id} className="flex items-center gap-3 rounded-3xl bg-card p-3.5 shadow-soft">
+                  <div className="grid size-11 place-items-center rounded-3xl bg-accent">
                     <BookOpen className="size-5 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -195,7 +195,7 @@ function Dashboard() {
           <div className="mt-3 space-y-2.5">
             {nextExams.map((e) => (
               <div key={e.id} className="flex items-center gap-3 overflow-hidden rounded-3xl bg-gradient-brand p-4 text-white shadow-glow">
-                <div className="grid size-12 place-items-center rounded-2xl bg-white/20 backdrop-blur">
+                <div className="grid size-12 place-items-center rounded-3xl bg-white/20 backdrop-blur">
                   <GraduationCap className="size-6" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -248,7 +248,7 @@ function QuickAction({
   return (
     <Link to={to} className="flex flex-col items-center gap-1.5 active:scale-95 transition">
       <div
-        className="grid size-14 place-items-center rounded-2xl shadow-soft"
+        className="grid size-14 place-items-center rounded-3xl shadow-soft"
         style={{ background: `color-mix(in oklab, ${tint} 15%, var(--card))` }}
       >
         <Icon className="size-6" style={{ color: tint }} strokeWidth={2.2} />
