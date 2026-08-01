@@ -20,8 +20,17 @@ import {
 } from "@/lib/schedule";
 
 export const Route = createFileRoute("/app/planner")({
+  head: () => ({
+    meta: [
+      { title: "Planner — StudySphere" },
+      { name: "description", content: "Track homework, quizzes, projects and exams with real due dates." },
+      { property: "og:title", content: "Planner — StudySphere" },
+      { property: "og:description", content: "Track homework, quizzes, projects and exams with real due dates." },
+    ],
+  }),
   component: Planner,
 });
+
 
 type Row = {
   id: string;
@@ -106,6 +115,9 @@ function Planner() {
 
   const shown = rows.filter((r) => bucketFor(r.date, r.done) === filter);
   const loading = la || le;
+  const draftValid =
+    !!draft && draft.title.trim().length > 0 && (draft.kind !== "exam" || draft.due_at.length > 0);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -135,14 +147,14 @@ function Planner() {
           <Link
             to="/app/classes"
             aria-label="My classes"
-            className="grid size-11 place-items-center rounded-2xl bg-card shadow-soft active:scale-95"
+            className="grid size-11 place-items-center rounded-3xl bg-card shadow-soft active:scale-95"
           >
             <LayoutList className="size-5 text-primary" />
           </Link>
           <button
             onClick={() => setDraft(emptyDraft)}
             aria-label="Add item"
-            className="grid size-11 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow active:scale-95"
+            className="grid size-11 place-items-center rounded-3xl bg-gradient-brand text-white shadow-glow active:scale-95"
           >
             <Plus className="size-5" strokeWidth={2.5} />
           </button>
@@ -182,12 +194,25 @@ function Planner() {
           {shown.length === 0 && (
             <div className="rounded-3xl border border-dashed border-border p-8 text-center">
               <CalendarDays className="mx-auto size-8 text-muted-foreground" />
-              <p className="mt-2 text-sm font-semibold">Nothing here!</p>
-              <p className="text-xs text-muted-foreground">
-                {rows.length === 0 ? "Tap + to add your first task." : "You're all caught up 🎉"}
+              <p className="mt-2 text-sm font-semibold">
+                {rows.length === 0 ? "Your planner is empty" : "Nothing here!"}
               </p>
+              <p className="text-xs text-muted-foreground">
+                {rows.length === 0
+                  ? "Tap the + button top-right to add homework, a quiz, a project or an exam. Add your classes first to link work to them."
+                  : "You're all caught up 🎉"}
+              </p>
+              {rows.length === 0 && (
+                <Link
+                  to="/app/classes"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glow"
+                >
+                  <GraduationCap className="size-3.5" /> Add my classes
+                </Link>
+              )}
             </div>
           )}
+
           {shown.map((i) => (
             <div key={`${i.kind}-${i.id}`} className="flex items-center gap-3 rounded-3xl bg-card p-3.5 shadow-soft">
               {i.kind === "task" ? (
@@ -219,7 +244,7 @@ function Planner() {
               <button
                 aria-label={`Delete ${i.title}`}
                 onClick={() => remove.mutate({ id: i.id, kind: i.kind })}
-                className="grid size-9 shrink-0 place-items-center rounded-xl bg-destructive/10"
+                className="grid size-9 shrink-0 place-items-center rounded-3xl bg-destructive/10"
               >
                 <Trash2 className="size-4 text-destructive" />
               </button>
@@ -229,7 +254,7 @@ function Planner() {
       )}
 
       {filter === "Overdue" && shown.length > 0 && (
-        <div className="mt-4 flex items-start gap-2 rounded-2xl bg-destructive/10 p-3">
+        <div className="mt-4 flex items-start gap-2 rounded-3xl bg-destructive/10 p-3">
           <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
           <p className="text-xs text-destructive">
             You have overdue work. Tap the AI button to auto-generate a catch-up plan.
@@ -273,14 +298,14 @@ function Planner() {
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
               placeholder="Titration lab report"
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             <label className="mt-3 block text-xs font-semibold">Class</label>
             <select
               value={draft.class_id}
               onChange={(e) => setDraft({ ...draft, class_id: e.target.value })}
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             >
               <option value="">No class</option>
               {classes.map((c) => (
@@ -301,7 +326,7 @@ function Planner() {
               required={draft.kind === "exam"}
               value={draft.due_at}
               onChange={(e) => setDraft({ ...draft, due_at: e.target.value })}
-              className="mt-1 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             {draft.kind === "task" && (
@@ -313,7 +338,7 @@ function Planner() {
                       key={p}
                       type="button"
                       onClick={() => setDraft({ ...draft, priority: p })}
-                      className={`flex-1 rounded-2xl py-2.5 text-xs font-semibold capitalize transition ${
+                      className={`flex-1 rounded-3xl py-2.5 text-xs font-semibold capitalize transition ${
                         draft.priority === p ? "bg-foreground text-background" : "bg-card text-muted-foreground shadow-soft"
                       }`}
                     >
@@ -330,7 +355,7 @@ function Planner() {
               value={draft.notes}
               onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
               placeholder="Optional details"
-              className="mt-1 w-full resize-none rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full resize-none rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
 
             <div className="mt-5 flex gap-2">
@@ -343,7 +368,7 @@ function Planner() {
               </button>
               <button
                 type="submit"
-                disabled={save.isPending}
+                disabled={save.isPending || !draftValid}
                 className="flex-1 rounded-full bg-gradient-brand py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
               >
                 {save.isPending ? "Saving…" : "Add"}

@@ -4,12 +4,24 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/auth" });
+
+    if (location.pathname !== "/app/onboarding") {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("education_level, grade_year, school_name")
+        .eq("id", data.session.user.id)
+        .maybeSingle();
+      const incomplete =
+        !profile?.education_level || !profile?.grade_year?.trim() || !profile?.school_name?.trim();
+      if (incomplete) throw redirect({ to: "/app/onboarding" });
+    }
   },
   component: AppShell,
 });
+
 
 
 type Tab = {

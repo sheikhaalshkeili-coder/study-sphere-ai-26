@@ -34,7 +34,7 @@ function Study() {
             }`}
             style={{ background: `color-mix(in oklab, ${t.tint} 10%, var(--card))` }}
           >
-            <div className="grid size-10 place-items-center rounded-2xl" style={{ background: `color-mix(in oklab, ${t.tint} 22%, var(--card))` }}>
+            <div className="grid size-10 place-items-center rounded-3xl" style={{ background: `color-mix(in oklab, ${t.tint} 22%, var(--card))` }}>
               <t.icon className="size-5" style={{ color: t.tint }} strokeWidth={2.2} />
             </div>
             <p className="mt-3 font-display text-sm font-bold">{t.label}</p>
@@ -52,7 +52,7 @@ function Study() {
 
       {/* GPA + progress teaser */}
       <div className="mt-6 flex items-center gap-3 rounded-3xl bg-card p-4 shadow-soft">
-        <div className="grid size-11 place-items-center rounded-2xl bg-accent">
+        <div className="grid size-11 place-items-center rounded-3xl bg-accent">
           <GraduationCap className="size-5 text-primary" />
         </div>
         <div className="flex-1">
@@ -135,7 +135,7 @@ function Focus() {
 
       <div className="mt-5 grid grid-cols-3 gap-2 text-center">
         {[{k:"Sessions",v:"4"},{k:"Focus",v:"1h 45m"},{k:"XP",v:"+120"}].map(x => (
-          <div key={x.k} className="rounded-2xl bg-card px-3 py-2 shadow-soft">
+          <div key={x.k} className="rounded-3xl bg-card px-3 py-2 shadow-soft">
             <p className="font-display text-sm font-bold">{x.v}</p>
             <p className="text-[10px] text-muted-foreground">{x.k}</p>
           </div>
@@ -176,13 +176,13 @@ function Flashcards() {
       <div className="mt-4 grid grid-cols-2 gap-2">
         <button
           onClick={() => { setFlip(false); setI((n) => (n + 1) % cards.length); }}
-          className="rounded-2xl bg-destructive/10 py-3 text-sm font-semibold text-destructive active:scale-95"
+          className="rounded-3xl bg-destructive/10 py-3 text-sm font-semibold text-destructive active:scale-95"
         >
           Difficult
         </button>
         <button
           onClick={() => { setFlip(false); setI((n) => (n + 1) % cards.length); }}
-          className="rounded-2xl bg-success/15 py-3 text-sm font-semibold text-success active:scale-95"
+          className="rounded-3xl bg-success/15 py-3 text-sm font-semibold text-success active:scale-95"
         >
           Easy
         </button>
@@ -206,7 +206,7 @@ function Scanner() {
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2.5">
         {["Summarize", "Generate flashcards", "Create quiz", "Save as notes"].map((x) => (
-          <button key={x} className="rounded-2xl bg-card p-3.5 text-left shadow-soft active:scale-95">
+          <button key={x} className="rounded-3xl bg-card p-3.5 text-left shadow-soft active:scale-95">
             <p className="text-sm font-semibold">{x}</p>
             <p className="text-[11px] text-muted-foreground">AI powered</p>
           </button>
@@ -228,7 +228,7 @@ function Notes() {
       <div className="grid grid-cols-2 gap-3">
         {folders.map((f) => (
           <div key={f.name} className="rounded-3xl bg-card p-4 shadow-soft">
-            <div className="size-9 rounded-2xl" style={{ background: `color-mix(in oklab, ${f.tint} 25%, transparent)` }} />
+            <div className="size-9 rounded-3xl" style={{ background: `color-mix(in oklab, ${f.tint} 25%, transparent)` }} />
             <p className="mt-3 font-display text-sm font-bold">{f.name}</p>
             <p className="text-[11px] text-muted-foreground">{f.count} notes</p>
           </div>
@@ -238,7 +238,7 @@ function Notes() {
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent</p>
         <div className="mt-2 space-y-2">
           {["Cell respiration recap", "Derivatives cheat sheet", "WWII causes outline"].map((n) => (
-            <div key={n} className="flex items-center justify-between rounded-2xl bg-muted/50 px-3 py-2.5">
+            <div key={n} className="flex items-center justify-between rounded-3xl bg-muted/50 px-3 py-2.5">
               <p className="text-sm font-medium">{n}</p>
               <ChevronRight className="size-4 text-muted-foreground" />
             </div>

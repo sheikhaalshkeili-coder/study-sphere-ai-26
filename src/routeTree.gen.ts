@@ -16,8 +16,10 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppStudyRouteImport } from './routes/app.study'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
+import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAiRouteImport } from './routes/app.ai'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -54,6 +56,11 @@ const AppPlannerRoute = AppPlannerRouteImport.update({
   path: '/planner',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOnboardingRoute = AppOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppClassesRoute = AppClassesRouteImport.update({
   id: '/classes',
   path: '/classes',
@@ -64,13 +71,20 @@ const AppAiRoute = AppAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -79,8 +93,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -91,8 +107,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/api/chat': typeof ApiChatRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
   '/app/study': typeof AppStudyRoute
@@ -104,8 +122,10 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
+    | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -114,8 +134,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
+    | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -125,8 +147,10 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/api/chat'
     | '/app/ai'
     | '/app/classes'
+    | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
     | '/app/study'
@@ -137,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -190,6 +215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPlannerRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/onboarding': {
+      id: '/app/onboarding'
+      path: '/onboarding'
+      fullPath: '/app/onboarding'
+      preLoaderRoute: typeof AppOnboardingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/classes': {
       id: '/app/classes'
       path: '/classes'
@@ -204,12 +236,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AppRouteChildren {
   AppAiRoute: typeof AppAiRoute
   AppClassesRoute: typeof AppClassesRoute
+  AppOnboardingRoute: typeof AppOnboardingRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
   AppStudyRoute: typeof AppStudyRoute
@@ -219,6 +259,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAiRoute: AppAiRoute,
   AppClassesRoute: AppClassesRoute,
+  AppOnboardingRoute: AppOnboardingRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
   AppStudyRoute: AppStudyRoute,
@@ -231,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

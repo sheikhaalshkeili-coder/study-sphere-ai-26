@@ -9,8 +9,17 @@ import { useAssignments, useClasses, useExams } from "@/hooks/use-study-data";
 import { colorOf, dayOffset, endOfWeek, formatDue, formatTime, startOfWeek } from "@/lib/schedule";
 
 export const Route = createFileRoute("/app/")({
+  head: () => ({
+    meta: [
+      { title: "Dashboard — StudySphere" },
+      { name: "description", content: "Today's classes, upcoming assignments and exams, all from your own data." },
+      { property: "og:title", content: "Dashboard — StudySphere" },
+      { property: "og:description", content: "Today's classes, upcoming assignments and exams, all from your own data." },
+    ],
+  }),
   component: Dashboard,
 });
+
 
 const today = new Date().toLocaleDateString("en-US", {
   weekday: "long", month: "long", day: "numeric",
@@ -67,10 +76,29 @@ function Dashboard() {
           </h1>
         </div>
 
-        <button className="relative grid size-11 place-items-center rounded-2xl border border-border bg-card shadow-soft">
+        <button className="relative grid size-11 place-items-center rounded-3xl border border-border bg-card shadow-soft">
           <Bell className="size-5" />
         </button>
       </div>
+
+      {/* First-time hint */}
+      {!loading && classes.length === 0 && assignments.length === 0 && exams.length === 0 && (
+        <div className="mt-5 rounded-3xl border border-dashed border-border p-5">
+          <p className="text-sm font-semibold">Welcome to StudySphere 👋</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Two quick steps to make this dashboard yours: add your classes, then add your first assignment or exam in the planner.
+          </p>
+          <div className="mt-3 flex gap-2">
+            <Link to="/app/classes" className="rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glow">
+              Add classes
+            </Link>
+            <Link to="/app/planner" className="rounded-full border border-border px-4 py-2 text-xs font-semibold">
+              Open planner
+            </Link>
+          </div>
+        </div>
+      )}
+
 
       {/* Motivational quote */}
       <div className="mt-5 rounded-3xl bg-gradient-brand p-5 text-white shadow-glow">
@@ -164,8 +192,8 @@ function Dashboard() {
           ) : (
             <div className="mt-3 space-y-2.5">
               {upcoming.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 rounded-2xl bg-card p-3.5 shadow-soft">
-                  <div className="grid size-11 place-items-center rounded-2xl bg-accent">
+                <div key={a.id} className="flex items-center gap-3 rounded-3xl bg-card p-3.5 shadow-soft">
+                  <div className="grid size-11 place-items-center rounded-3xl bg-accent">
                     <BookOpen className="size-5 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -195,7 +223,7 @@ function Dashboard() {
           <div className="mt-3 space-y-2.5">
             {nextExams.map((e) => (
               <div key={e.id} className="flex items-center gap-3 overflow-hidden rounded-3xl bg-gradient-brand p-4 text-white shadow-glow">
-                <div className="grid size-12 place-items-center rounded-2xl bg-white/20 backdrop-blur">
+                <div className="grid size-12 place-items-center rounded-3xl bg-white/20 backdrop-blur">
                   <GraduationCap className="size-6" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -248,7 +276,7 @@ function QuickAction({
   return (
     <Link to={to} className="flex flex-col items-center gap-1.5 active:scale-95 transition">
       <div
-        className="grid size-14 place-items-center rounded-2xl shadow-soft"
+        className="grid size-14 place-items-center rounded-3xl shadow-soft"
         style={{ background: `color-mix(in oklab, ${tint} 15%, var(--card))` }}
       >
         <Icon className="size-6" style={{ color: tint }} strokeWidth={2.2} />
