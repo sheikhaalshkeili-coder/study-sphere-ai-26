@@ -232,7 +232,7 @@ export function useDeleteTask() {
   const invalidate = useInvalidate(["assignments", "exams"]);
   return useMutation({
     mutationFn: async ({ id, kind }: { id: string; kind: "task" | "exam" }) => {
-      const table = kind === "exam" ? "exams" : "assignments";
+      const table: "exams" | "assignments" = kind === "exam" ? "exams" : "assignments";
       const { data: snapshot } = await supabase.from(table).select("*").eq("id", id).maybeSingle();
       const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
