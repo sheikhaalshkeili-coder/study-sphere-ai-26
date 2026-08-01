@@ -9,8 +9,17 @@ import { useAssignments, useClasses, useExams } from "@/hooks/use-study-data";
 import { colorOf, dayOffset, endOfWeek, formatDue, formatTime, startOfWeek } from "@/lib/schedule";
 
 export const Route = createFileRoute("/app/")({
+  head: () => ({
+    meta: [
+      { title: "Dashboard — StudySphere" },
+      { name: "description", content: "Today's classes, upcoming assignments and exams, all from your own data." },
+      { property: "og:title", content: "Dashboard — StudySphere" },
+      { property: "og:description", content: "Today's classes, upcoming assignments and exams, all from your own data." },
+    ],
+  }),
   component: Dashboard,
 });
+
 
 const today = new Date().toLocaleDateString("en-US", {
   weekday: "long", month: "long", day: "numeric",
