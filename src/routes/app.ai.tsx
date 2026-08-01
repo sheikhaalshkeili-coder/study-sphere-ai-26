@@ -200,7 +200,7 @@ function AIChat() {
                   onClick={() => send(s.text)}
                   className="flex w-full items-center gap-3 rounded-3xl bg-card p-3.5 text-left shadow-soft active:scale-[0.98]"
                 >
-                  <div className="grid size-9 place-items-center rounded-2xl bg-accent">
+                  <div className="grid size-9 place-items-center rounded-3xl bg-accent">
                     <s.icon className="size-4 text-primary" />
                   </div>
                   <span className="flex-1 text-sm font-medium">{s.text}</span>
