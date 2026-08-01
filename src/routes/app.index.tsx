@@ -81,6 +81,25 @@ function Dashboard() {
         </button>
       </div>
 
+      {/* First-time hint */}
+      {!loading && classes.length === 0 && assignments.length === 0 && exams.length === 0 && (
+        <div className="mt-5 rounded-3xl border border-dashed border-border p-5">
+          <p className="text-sm font-semibold">Welcome to StudySphere 👋</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Two quick steps to make this dashboard yours: add your classes, then add your first assignment or exam in the planner.
+          </p>
+          <div className="mt-3 flex gap-2">
+            <Link to="/app/classes" className="rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glow">
+              Add classes
+            </Link>
+            <Link to="/app/planner" className="rounded-full border border-border px-4 py-2 text-xs font-semibold">
+              Open planner
+            </Link>
+          </div>
+        </div>
+      )}
+
+
       {/* Motivational quote */}
       <div className="mt-5 rounded-3xl bg-gradient-brand p-5 text-white shadow-glow">
         <div className="flex items-start gap-3">
