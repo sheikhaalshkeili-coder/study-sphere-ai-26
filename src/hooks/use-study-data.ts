@@ -232,13 +232,31 @@ export function useDeleteTask() {
   const invalidate = useInvalidate(["assignments", "exams"]);
   return useMutation({
     mutationFn: async ({ id, kind }: { id: string; kind: "task" | "exam" }) => {
-      const { error } = await supabase.from(kind === "exam" ? "exams" : "assignments").delete().eq("id", id);
+      const table = kind === "exam" ? "exams" : "assignments";
+      const { data: snapshot } = await supabase.from(table).select("*").eq("id", id).maybeSingle();
+      const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
+      return { table, snapshot: snapshot as Record<string, unknown> | null };
     },
-    onSuccess: () => {
+    onSuccess: ({ table, snapshot }) => {
       invalidate();
-      toast.success("Deleted");
+      toast.success("Deleted", {
+        action: snapshot
+          ? {
+              label: "Undo",
+              onClick: async () => {
+                const { error } = await supabase.from(table).insert(snapshot as never);
+                if (error) toast.error("Couldn't restore that");
+                else {
+                  invalidate();
+                  toast.success("Restored");
+                }
+              },
+            }
+          : undefined,
+      });
     },
     onError: (e: Error) => toast.error(e.message || "Couldn't delete that"),
   });
 }
+
