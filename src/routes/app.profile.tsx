@@ -102,16 +102,25 @@ function Profile() {
         ))}
       </div>
 
-      {/* GPA — no grades feature yet, so show an honest empty state */}
-      <div className="mt-4 flex items-center gap-3 rounded-3xl border border-dashed border-border p-4">
+      {/* GPA — computed from the student's own grades */}
+      <Link
+        to="/app/grades"
+        className={`mt-4 flex items-center gap-3 rounded-3xl p-4 ${gpa ? "bg-card shadow-soft" : "border border-dashed border-border"}`}
+      >
         <div className="grid size-10 place-items-center rounded-3xl bg-accent">
           <Target className="size-4 text-primary" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-semibold">GPA tracking</p>
-          <p className="text-xs text-muted-foreground">Add grades to see your GPA — grade entry is coming soon.</p>
+          <p className="text-sm font-semibold">{gpa ? `GPA ${gpa.gpa.toFixed(2)}` : "GPA tracking"}</p>
+          <p className="text-xs text-muted-foreground">
+            {gpa
+              ? `Across ${gpa.classCount} ${gpa.classCount === 1 ? "class" : "classes"} · tap to manage grades`
+              : "Add grades to see your GPA."}
+          </p>
         </div>
-      </div>
+        <ChevronRight className="size-4 text-muted-foreground" />
+      </Link>
+
 
       {/* At a glance */}
       <div className="mt-6">
