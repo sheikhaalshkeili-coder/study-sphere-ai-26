@@ -1,12 +1,14 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Settings, Bell, Moon, ChevronRight, GraduationCap, Target,
   LogOut, CalendarDays, CheckCircle2, BookOpen, ClipboardList,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
-import { useAssignments, useClasses, useExams } from "@/hooks/use-study-data";
+import { useAssignments, useClasses, useExams, useGrades } from "@/hooks/use-study-data";
+import { computeGpa } from "@/lib/gpa";
+
 
 export const Route = createFileRoute("/app/profile")({
   head: () => ({
