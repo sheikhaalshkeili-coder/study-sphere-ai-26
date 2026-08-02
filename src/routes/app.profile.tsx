@@ -29,6 +29,9 @@ function Profile() {
   const { data: classes = [] } = useClasses();
   const { data: assignments = [] } = useAssignments();
   const { data: exams = [] } = useExams();
+  const { data: grades = [] } = useGrades();
+  const gpa = useMemo(() => computeGpa(grades), [grades]);
+
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
