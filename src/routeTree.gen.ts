@@ -17,8 +17,10 @@ import { Route as AppStudyRouteImport } from './routes/app.study'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
 import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
+import { Route as AppGradesRouteImport } from './routes/app.grades'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAiRouteImport } from './routes/app.ai'
+import { Route as ApiQuizRouteImport } from './routes/api/quiz'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const AuthRoute = AuthRouteImport.update({
@@ -61,6 +63,11 @@ const AppOnboardingRoute = AppOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGradesRoute = AppGradesRouteImport.update({
+  id: '/grades',
+  path: '/grades',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppClassesRoute = AppClassesRouteImport.update({
   id: '/classes',
   path: '/classes',
@@ -70,6 +77,11 @@ const AppAiRoute = AppAiRouteImport.update({
   id: '/ai',
   path: '/ai',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiQuizRoute = ApiQuizRouteImport.update({
+  id: '/api/quiz',
+  path: '/api/quiz',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -82,8 +94,10 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/quiz': typeof ApiQuizRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/grades': typeof AppGradesRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -94,8 +108,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/quiz': typeof ApiQuizRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/grades': typeof AppGradesRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -108,8 +124,10 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/quiz': typeof ApiQuizRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
+  '/app/grades': typeof AppGradesRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -123,8 +141,10 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/api/chat'
+    | '/api/quiz'
     | '/app/ai'
     | '/app/classes'
+    | '/app/grades'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -135,8 +155,10 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/api/chat'
+    | '/api/quiz'
     | '/app/ai'
     | '/app/classes'
+    | '/app/grades'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -148,8 +170,10 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/api/chat'
+    | '/api/quiz'
     | '/app/ai'
     | '/app/classes'
+    | '/app/grades'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -162,6 +186,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiQuizRoute: typeof ApiQuizRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -222,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOnboardingRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/grades': {
+      id: '/app/grades'
+      path: '/grades'
+      fullPath: '/app/grades'
+      preLoaderRoute: typeof AppGradesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/classes': {
       id: '/app/classes'
       path: '/classes'
@@ -236,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/quiz': {
+      id: '/api/quiz'
+      path: '/api/quiz'
+      fullPath: '/api/quiz'
+      preLoaderRoute: typeof ApiQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -249,6 +288,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppAiRoute: typeof AppAiRoute
   AppClassesRoute: typeof AppClassesRoute
+  AppGradesRoute: typeof AppGradesRoute
   AppOnboardingRoute: typeof AppOnboardingRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
@@ -259,6 +299,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAiRoute: AppAiRoute,
   AppClassesRoute: AppClassesRoute,
+  AppGradesRoute: AppGradesRoute,
   AppOnboardingRoute: AppOnboardingRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
@@ -273,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiQuizRoute: ApiQuizRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
