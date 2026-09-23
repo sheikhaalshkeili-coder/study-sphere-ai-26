@@ -70,6 +70,7 @@ export type Database = {
       chat_messages: {
         Row: {
           content: string
+          conversation_id: string | null
           created_at: string
           id: string
           role: string
@@ -77,6 +78,7 @@ export type Database = {
         }
         Insert: {
           content: string
+          conversation_id?: string | null
           created_at?: string
           id?: string
           role: string
@@ -84,12 +86,21 @@ export type Database = {
         }
         Update: {
           content?: string
+          conversation_id?: string | null
           created_at?: string
           id?: string
           role?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "tutor_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       classes: {
         Row: {
@@ -184,6 +195,9 @@ export type Database = {
           created_at: string
           id: string
           question: string
+          times_correct: number
+          times_seen: number
+          topic: string | null
           updated_at: string
           user_id: string
         }
@@ -193,6 +207,9 @@ export type Database = {
           created_at?: string
           id?: string
           question: string
+          times_correct?: number
+          times_seen?: number
+          topic?: string | null
           updated_at?: string
           user_id: string
         }
@@ -202,6 +219,9 @@ export type Database = {
           created_at?: string
           id?: string
           question?: string
+          times_correct?: number
+          times_seen?: number
+          topic?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -340,6 +360,50 @@ export type Database = {
         }
         Relationships: []
       }
+      study_plan_sessions: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          done: boolean
+          focus: string | null
+          id: string
+          minutes: number
+          start_at: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          done?: boolean
+          focus?: string | null
+          id?: string
+          minutes?: number
+          start_at: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          done?: boolean
+          focus?: string | null
+          id?: string
+          minutes?: number
+          start_at?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_plan_sessions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_sessions: {
         Row: {
           class_id: string | null
@@ -368,6 +432,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "study_sessions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tutor_conversations: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_conversations_class_id_fkey"
             columns: ["class_id"]
             isOneToOne: false
             referencedRelation: "classes"
