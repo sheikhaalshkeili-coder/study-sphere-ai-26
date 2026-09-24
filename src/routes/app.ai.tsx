@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Send, Sparkles, BookOpen, ListChecks, FileText, Lightbulb, Brain, RefreshCw, Trash2, Info } from "lucide-react";
+import { Send, Sparkles, BookOpen, ListChecks, FileText, Lightbulb, Brain, RefreshCw, Trash2, Info, GraduationCap, ChevronRight, Baby } from "lucide-react";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { supabase } from "@/integrations/supabase/client";
