@@ -26,8 +26,8 @@ export function colorOf(name: string | null | undefined) {
 export const TASK_TYPES = ["assignment", "homework", "quiz", "project"] as const;
 export type TaskType = (typeof TASK_TYPES)[number];
 
-export type Bucket = "Today" | "Tomorrow" | "This Week" | "Overdue";
-export const BUCKETS: Bucket[] = ["Today", "Tomorrow", "This Week", "Overdue"];
+export type Bucket = "Today" | "Tomorrow" | "This Week" | "Overdue" | "Completed";
+export const BUCKETS: Bucket[] = ["Overdue", "Today", "Tomorrow", "This Week", "Completed"];
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -42,9 +42,10 @@ export function dayOffset(iso: string, now = new Date()) {
 }
 
 export function bucketFor(iso: string | null, done: boolean, now = new Date()): Bucket | null {
+  if (done) return "Completed";
   if (!iso) return null;
   const off = dayOffset(iso, now);
-  if (off < 0) return done ? "This Week" : "Overdue";
+  if (off < 0) return "Overdue";
   if (off === 0) return "Today";
   if (off === 1) return "Tomorrow";
   if (off <= 7) return "This Week";
