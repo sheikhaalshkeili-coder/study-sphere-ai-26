@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import {
-  Sparkles, Brain, BookOpen, ScanLine, CalendarDays, LayoutList,
-  GraduationCap, CheckCircle2, ChevronRight, Bell, Loader2,
+  Sparkles, Brain, BookOpen, ScanLine, LayoutList, Flame, Timer,
+  GraduationCap, CheckCircle2, ChevronRight, Bell, Loader2, StickyNote,
 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
-import { useAssignments, useClasses, useExams } from "@/hooks/use-study-data";
+import { useAssignments, useClasses, useExams, useNotes, useStudySessions } from "@/hooks/use-study-data";
 import { colorOf, dayOffset, endOfWeek, formatDue, formatTime, startOfWeek } from "@/lib/schedule";
+import { computeStreak, minutesInLastDays, motivationForToday } from "@/lib/stats";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({
