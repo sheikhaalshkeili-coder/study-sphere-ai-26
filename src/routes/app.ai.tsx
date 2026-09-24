@@ -294,7 +294,15 @@ function AIChat() {
   );
 }
 
-function Bubble({ role, content }: { role: "user" | "assistant"; content: string }) {
+function Bubble({
+  role,
+  content,
+  onEli5,
+}: {
+  role: "user" | "assistant";
+  content: string;
+  onEli5?: () => void;
+}) {
   if (role === "user") {
     return (
       <div className="flex justify-end">
@@ -309,6 +317,14 @@ function Bubble({ role, content }: { role: "user" | "assistant"; content: string
       <div className="max-w-[90%] whitespace-pre-wrap rounded-3xl rounded-bl-md bg-card px-4 py-3 text-sm shadow-soft">
         {content}
       </div>
+      {onEli5 && (
+        <button
+          onClick={onEli5}
+          className="mt-2 flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold shadow-soft active:scale-95"
+        >
+          <Baby className="size-3.5 text-primary" /> Explain Like I'm 5
+        </button>
+      )}
       <p className="mt-1.5 flex items-center gap-1 pl-1 text-[10px] text-muted-foreground">
         <Info className="size-3" /> AI responses may contain mistakes — double check important facts.
       </p>
