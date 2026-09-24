@@ -110,5 +110,8 @@ export async function saveTutorMessage(
 ) {
   const user_id = await requireUserId();
   await supabase.from("chat_messages").insert({ user_id, role, content, conversation_id: conversationId });
-  await supabase.from("tutor_conversations").update({ title: undefined }).eq("id", conversationId);
+  await supabase
+    .from("tutor_conversations")
+    .update({ updated_at: new Date().toISOString() })
+    .eq("id", conversationId);
 }
