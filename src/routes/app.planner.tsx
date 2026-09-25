@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, Check, CalendarDays, AlertCircle, Loader2, Trash2, GraduationCap, LayoutList } from "lucide-react";
+import { Plus, Check, CalendarDays, AlertCircle, Loader2, Trash2, GraduationCap, LayoutList, Pencil, Link2 } from "lucide-react";
 import {
   useClasses,
   useAssignments,
@@ -16,6 +16,7 @@ import {
   colorOf,
   formatDue,
   fromLocalInput,
+  toLocalInput,
   type Bucket,
 } from "@/lib/schedule";
 
@@ -51,6 +52,7 @@ const priorityStyle: Record<string, string> = {
 };
 
 type Draft = {
+  id?: string;
   kind: "task" | "exam";
   title: string;
   type: string;
@@ -124,6 +126,7 @@ function Planner() {
     if (!draft) return;
     const cls = classes.find((c) => c.id === draft.class_id);
     await save.mutateAsync({
+      id: draft.id,
       kind: draft.kind,
       title: draft.title.trim(),
       type: draft.kind === "exam" ? "assignment" : draft.type,
@@ -134,6 +137,36 @@ function Planner() {
       notes: draft.notes.trim() || null,
     });
     setDraft(null);
+  }
+
+  function editRow(row: Row) {
+    if (row.kind === "task") {
+      const a = assignments.find((x) => x.id === row.id);
+      if (!a) return;
+      setDraft({
+        id: a.id,
+        kind: "task",
+        title: a.title,
+        type: a.type,
+        class_id: a.class_id ?? "",
+        due_at: toLocalInput(a.due_at),
+        priority: a.priority,
+        notes: a.notes ?? "",
+      });
+      return;
+    }
+    const e = exams.find((x) => x.id === row.id);
+    if (!e) return;
+    setDraft({
+      id: e.id,
+      kind: "exam",
+      title: e.title,
+      type: "assignment",
+      class_id: e.class_id ?? "",
+      due_at: toLocalInput(e.exam_at),
+      priority: "high",
+      notes: e.notes ?? "",
+    });
   }
 
   return (
@@ -158,6 +191,19 @@ function Planner() {
           >
             <Plus className="size-5" strokeWidth={2.5} />
           </button>
+        </div>
+      </div>
+
+      {/* Google Classroom — honest state: nothing is imported until it is really connected */}
+      <div className="mt-5 flex items-center gap-3 rounded-3xl border border-dashed border-border p-4">
+        <div className="grid size-10 shrink-0 place-items-center rounded-3xl bg-accent">
+          <Link2 className="size-4 text-primary" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold">Google Classroom — not connected</p>
+          <p className="text-xs text-muted-foreground">
+            Importing your Classroom coursework needs Google approval for this app. Nothing is imported yet.
+          </p>
         </div>
       </div>
 
@@ -242,6 +288,13 @@ function Planner() {
                 {i.kind === "exam" ? "exam" : i.priority}
               </span>
               <button
+                aria-label={`Edit ${i.title}`}
+                onClick={() => editRow(i)}
+                className="grid size-9 shrink-0 place-items-center rounded-3xl bg-muted"
+              >
+                <Pencil className="size-4 text-muted-foreground" />
+              </button>
+              <button
                 aria-label={`Delete ${i.title}`}
                 onClick={() => remove.mutate({ id: i.id, kind: i.kind })}
                 className="grid size-9 shrink-0 place-items-center rounded-3xl bg-destructive/10"
@@ -257,7 +310,11 @@ function Planner() {
         <div className="mt-4 flex items-start gap-2 rounded-3xl bg-destructive/10 p-3">
           <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
           <p className="text-xs text-destructive">
-            You have overdue work. Tap the AI button to auto-generate a catch-up plan.
+            You have overdue work.{" "}
+            <Link to="/app/tutor" className="font-semibold underline">
+              Ask your tutor for a catch-up plan
+            </Link>
+            .
           </p>
         </div>
       )}
@@ -270,7 +327,7 @@ function Planner() {
             className="relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-background p-5 pb-8"
           >
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-muted" />
-            <h2 className="font-display text-lg font-bold">New item</h2>
+            <h2 className="font-display text-lg font-bold">{draft.id ? "Edit item" : "New item"}</h2>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {[...TASK_TYPES, "exam"].map((t) => {
@@ -371,7 +428,7 @@ function Planner() {
                 disabled={save.isPending || !draftValid}
                 className="flex-1 rounded-full bg-gradient-brand py-3 text-sm font-semibold text-white shadow-glow disabled:opacity-70"
               >
-                {save.isPending ? "Saving…" : "Add"}
+                {save.isPending ? "Saving…" : draft.id ? "Save" : "Add"}
               </button>
             </div>
           </form>

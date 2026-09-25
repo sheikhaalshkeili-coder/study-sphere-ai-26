@@ -9,12 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppTutorRouteImport } from './routes/app.tutor'
 import { Route as AppStudyRouteImport } from './routes/app.study'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
 import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
@@ -25,6 +28,16 @@ import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as ApiQuizRouteImport } from './routes/api/quiz'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -53,6 +66,11 @@ const AppTutorRoute = AppTutorRouteImport.update({
 const AppStudyRoute = AppStudyRouteImport.update({
   id: '/study',
   path: '/study',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgressRoute = AppProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
@@ -105,6 +123,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -114,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
@@ -121,6 +142,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -130,6 +153,7 @@ export interface FileRoutesByTo {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app': typeof AppIndexRoute
@@ -139,6 +163,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -148,6 +174,7 @@ export interface FileRoutesById {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
@@ -158,6 +185,8 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/forgot-password'
+    | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
     | '/api/tutor'
@@ -167,6 +196,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app/'
@@ -174,6 +204,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/forgot-password'
+    | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
     | '/api/tutor'
@@ -183,6 +215,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app'
@@ -191,6 +224,8 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/forgot-password'
+    | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
     | '/api/tutor'
@@ -200,6 +235,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app/'
@@ -209,6 +245,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiQuizRoute: typeof ApiQuizRoute
   ApiTutorRoute: typeof ApiTutorRoute
@@ -216,6 +254,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -256,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/study'
       fullPath: '/app/study'
       preLoaderRoute: typeof AppStudyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/profile': {
@@ -331,6 +390,7 @@ interface AppRouteChildren {
   AppOnboardingRoute: typeof AppOnboardingRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppProgressRoute: typeof AppProgressRoute
   AppStudyRoute: typeof AppStudyRoute
   AppTutorRoute: typeof AppTutorRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -343,6 +403,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppOnboardingRoute: AppOnboardingRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
+  AppProgressRoute: AppProgressRoute,
   AppStudyRoute: AppStudyRoute,
   AppTutorRoute: AppTutorRoute,
   AppIndexRoute: AppIndexRoute,
@@ -354,6 +415,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
   ApiQuizRoute: ApiQuizRoute,
   ApiTutorRoute: ApiTutorRoute,

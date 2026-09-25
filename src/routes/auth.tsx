@@ -186,6 +186,12 @@ function AuthPage() {
             />
           </Field>
 
+          {mode === "signin" && (
+            <Link to="/forgot-password" className="self-end text-xs font-semibold text-primary">
+              Forgot password?
+            </Link>
+          )}
+
           {error && (
             <p className="rounded-xl bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">{error}</p>
           )}
