@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppTutorRouteImport } from './routes/app.tutor'
 import { Route as AppStudyRouteImport } from './routes/app.study'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
 import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
@@ -53,6 +54,11 @@ const AppTutorRoute = AppTutorRouteImport.update({
 const AppStudyRoute = AppStudyRouteImport.update({
   id: '/study',
   path: '/study',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgressRoute = AppProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app': typeof AppIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
+    | '/app/progress'
     | '/app/study'
     | '/app/tutor'
     | '/app/'
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       path: '/study'
       fullPath: '/app/study'
       preLoaderRoute: typeof AppStudyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/profile': {
@@ -331,6 +350,7 @@ interface AppRouteChildren {
   AppOnboardingRoute: typeof AppOnboardingRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppProgressRoute: typeof AppProgressRoute
   AppStudyRoute: typeof AppStudyRoute
   AppTutorRoute: typeof AppTutorRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -343,6 +363,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppOnboardingRoute: AppOnboardingRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
+  AppProgressRoute: AppProgressRoute,
   AppStudyRoute: AppStudyRoute,
   AppTutorRoute: AppTutorRoute,
   AppIndexRoute: AppIndexRoute,
