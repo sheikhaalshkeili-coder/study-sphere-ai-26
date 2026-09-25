@@ -546,7 +546,7 @@ export function useStudySessions() {
         .from("study_sessions")
         .select("id, class_id, minutes, started_at")
         .order("started_at", { ascending: false })
-        .limit(50);
+        .limit(400);
       if (error) throw error;
       return (data ?? []) as StudySessionRow[];
     },

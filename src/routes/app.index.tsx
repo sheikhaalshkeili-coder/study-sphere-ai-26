@@ -49,7 +49,7 @@ function Dashboard() {
       items.push({ id: `s-${s.id}`, text: `Studied ${s.minutes} min`, at: new Date(s.started_at).getTime(), icon: "timer" }),
     );
     notes.forEach((n) =>
-      items.push({ id: `n-${n.id}`, text: `Wrote notes: ${n.title}`, at: new Date(n.updated_at ?? n.created_at ?? Date.now()).getTime(), icon: "note" }),
+      items.push({ id: `n-${n.id}`, text: `Wrote notes: ${n.title}`, at: new Date(n.updated_at).getTime(), icon: "note" }),
     );
     return items.sort((x, y) => y.at - x.at).slice(0, 4);
   }, [assignments, sessions, notes]);
