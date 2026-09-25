@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { ArrowLeft, Flame, Timer, Trophy, TrendingUp, CheckCircle2, Lock } from "lucide-react";
 import {
   useAssignments,
-  useClasses,
   useFlashcards,
   useGrades,
   useNotes,
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/app/progress")({
 });
 
 function Progress() {
-  const { data: classes = [] } = useClasses();
   const { data: assignments = [] } = useAssignments();
   const { data: sessions = [] } = useStudySessions();
   const { data: flashcards = [] } = useFlashcards();
@@ -41,7 +39,7 @@ function Progress() {
     () => computeAchievements({ assignments, sessions, flashcards, notes, grades, streak }),
     [assignments, sessions, flashcards, notes, grades, streak],
   );
-  const gpa = useMemo(() => computeGpa(grades, classes), [grades, classes]);
+  const gpa = useMemo(() => computeGpa(grades), [grades]);
   const doneCount = assignments.filter((a) => a.done).length;
 
   const enoughData = sessions.length > 0 || doneCount > 0 || grades.length > 0;
@@ -92,7 +90,7 @@ function Progress() {
             <Stat
               icon={<TrendingUp className="size-3.5 text-primary" />}
               label="GPA"
-              value={gpa === null ? "—" : gpa.toFixed(2)}
+              value={gpa === null ? "—" : gpa.gpa.toFixed(2)}
             />
           </div>
 
