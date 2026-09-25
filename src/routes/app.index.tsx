@@ -197,7 +197,7 @@ function Dashboard() {
       <div className="mt-6">
         <SectionHeader title="Quick actions" />
         <div className="mt-3 grid grid-cols-4 gap-3">
-          <QuickAction icon={Brain} label="AI Tutor" to="/app/ai" tint="oklch(0.6 0.2 275)" />
+          <QuickAction icon={Brain} label="Tutor Me" to="/app/tutor" tint="oklch(0.6 0.2 275)" />
           <QuickAction icon={LayoutList} label="Classes" to="/app/classes" tint="oklch(0.65 0.18 250)" />
           <QuickAction icon={BookOpen} label="Planner" to="/app/planner" tint="oklch(0.6 0.22 320)" />
           <QuickAction icon={ScanLine} label="Study" to="/app/study" tint="oklch(0.65 0.18 200)" />
@@ -291,9 +291,35 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="mt-6 flex items-center justify-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-        <CalendarDays className="size-3" /> Coming soon: AI voice tutor · Study groups
-      </div>
+      {/* Recent activity */}
+      {!loading && (
+        <div className="mt-6">
+          <SectionHeader title="Recent activity" action="Progress" to="/app/progress" />
+          {activity.length === 0 ? (
+            <EmptyCard text="Nothing logged yet. Finish a task or run a focus session." to="/app/study" />
+          ) : (
+            <div className="mt-3 space-y-2.5">
+              {activity.map((item) => (
+                <div key={item.id} className="flex items-center gap-3 rounded-3xl bg-card p-3.5 shadow-soft">
+                  <div className="grid size-9 place-items-center rounded-3xl bg-accent">
+                    {item.icon === "task" ? (
+                      <CheckCircle2 className="size-4 text-success" />
+                    ) : item.icon === "timer" ? (
+                      <Timer className="size-4 text-primary" />
+                    ) : (
+                      <StickyNote className="size-4 text-primary" />
+                    )}
+                  </div>
+                  <p className="min-w-0 flex-1 truncate text-sm font-medium">{item.text}</p>
+                  <span className="text-[10px] text-muted-foreground">
+                    {new Date(item.at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
