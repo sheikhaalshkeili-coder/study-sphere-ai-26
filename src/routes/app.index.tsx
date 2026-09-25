@@ -33,6 +33,26 @@ function Dashboard() {
   const { data: classes = [], isLoading: lc } = useClasses();
   const { data: assignments = [], isLoading: la } = useAssignments();
   const { data: exams = [], isLoading: le } = useExams();
+  const { data: sessions = [] } = useStudySessions();
+  const { data: notes = [] } = useNotes();
+
+  const streak = useMemo(() => computeStreak(sessions, assignments), [sessions, assignments]);
+  const weekMinutes = useMemo(() => minutesInLastDays(sessions, 7), [sessions]);
+
+  /** Recent activity is assembled from rows the student actually created. */
+  const activity = useMemo(() => {
+    const items: { id: string; text: string; at: number; icon: "task" | "timer" | "note" }[] = [];
+    assignments
+      .filter((a) => a.done && a.due_at)
+      .forEach((a) => items.push({ id: `a-${a.id}`, text: `Completed ${a.title}`, at: new Date(a.due_at as string).getTime(), icon: "task" }));
+    sessions.forEach((s) =>
+      items.push({ id: `s-${s.id}`, text: `Studied ${s.minutes} min`, at: new Date(s.started_at).getTime(), icon: "timer" }),
+    );
+    notes.forEach((n) =>
+      items.push({ id: `n-${n.id}`, text: `Wrote notes: ${n.title}`, at: new Date(n.updated_at ?? n.created_at ?? Date.now()).getTime(), icon: "note" }),
+    );
+    return items.sort((x, y) => y.at - x.at).slice(0, 4);
+  }, [assignments, sessions, notes]);
 
   const todaysClasses = useMemo(() => {
     const dow = new Date().getDay();
@@ -101,17 +121,44 @@ function Dashboard() {
       )}
 
 
-      {/* Motivational quote */}
+      {/* Daily motivation */}
       <div className="mt-5 rounded-3xl bg-gradient-brand p-5 text-white shadow-glow">
         <div className="flex items-start gap-3">
           <Sparkles className="size-5 shrink-0" />
           <div>
             <p className="text-xs font-medium opacity-80">Daily motivation</p>
             <p className="mt-1 font-display text-base font-semibold leading-snug">
-              "Small daily improvements are the key to staggering long-term results."
+              "{motivationForToday()}"
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Streak and study time — both derived from real logged activity */}
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <Link to="/app/progress" className="rounded-3xl bg-card p-4 shadow-soft active:scale-[0.98]">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <Flame className="size-3.5 text-warning" /> Study streak
+          </div>
+          <p className="mt-1 font-display text-2xl font-bold">
+            {streak}
+            <span className="text-sm text-muted-foreground"> {streak === 1 ? "day" : "days"}</span>
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {streak === 0 ? "Study or tick off a task today" : "Keep it going"}
+          </p>
+        </Link>
+        <Link to="/app/progress" className="rounded-3xl bg-card p-4 shadow-soft active:scale-[0.98]">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <Timer className="size-3.5 text-primary" /> Studied this week
+          </div>
+          <p className="mt-1 font-display text-2xl font-bold">
+            {Math.floor(weekMinutes / 60)}h {weekMinutes % 60}m
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {weekMinutes === 0 ? "Start a focus session" : "From your focus sessions"}
+          </p>
+        </Link>
       </div>
 
       {/* Real stats */}
