@@ -350,6 +350,9 @@ export type FlashcardRow = {
   class_id: string | null;
   question: string;
   answer: string;
+  topic: string | null;
+  times_seen: number;
+  times_correct: number;
 };
 
 export function useFlashcards() {
@@ -358,7 +361,7 @@ export function useFlashcards() {
     queryFn: async (): Promise<FlashcardRow[]> => {
       const { data, error } = await supabase
         .from("flashcards")
-        .select("id, class_id, question, answer")
+        .select("id, class_id, question, answer, topic, times_seen, times_correct")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as FlashcardRow[];
@@ -369,9 +372,9 @@ export function useFlashcards() {
 export function useSaveFlashcard() {
   const invalidate = useInvalidate(["flashcards"]);
   return useMutation({
-    mutationFn: async (input: { id?: string; question: string; answer: string; class_id: string | null }) => {
+    mutationFn: async (input: { id?: string; question: string; answer: string; class_id: string | null; topic?: string | null }) => {
       const user_id = await requireUserId();
-      const payload = { question: input.question, answer: input.answer, class_id: input.class_id };
+      const payload = { question: input.question, answer: input.answer, class_id: input.class_id, topic: input.topic || null };
       if (input.id) {
         const { error } = await supabase.from("flashcards").update(payload).eq("id", input.id);
         if (error) throw error;
@@ -386,6 +389,43 @@ export function useSaveFlashcard() {
       toast.success(mode === "updated" ? "Flashcard updated" : "Flashcard created");
     },
     onError: (e: Error) => toast.error(e.message || "Couldn't save the flashcard"),
+  });
+}
+
+/** Saves several AI-generated cards at once into the student's own account. */
+export function useSaveFlashcardsBulk() {
+  const invalidate = useInvalidate(["flashcards"]);
+  return useMutation({
+    mutationFn: async (input: { cards: { question: string; answer: string }[]; class_id: string | null; topic?: string | null }) => {
+      const user_id = await requireUserId();
+      const rows = input.cards.map((c) => ({
+        user_id, question: c.question, answer: c.answer, class_id: input.class_id, topic: input.topic || null,
+      }));
+      const { error } = await supabase.from("flashcards").insert(rows);
+      if (error) throw error;
+      return rows.length;
+    },
+    onSuccess: (n) => { invalidate(); toast.success(`${n} flashcards saved to your account`); },
+    onError: (e: Error) => toast.error(e.message || "Couldn't save the flashcards"),
+  });
+}
+
+/** Records one review of a card (seen +1, correct +1 when the student knew it). */
+export function useRecordFlashcardResult() {
+  const invalidate = useInvalidate(["flashcards"]);
+  return useMutation({
+    mutationFn: async (input: { card: FlashcardRow; correct: boolean }) => {
+      const { error } = await supabase
+        .from("flashcards")
+        .update({
+          times_seen: input.card.times_seen + 1,
+          times_correct: input.card.times_correct + (input.correct ? 1 : 0),
+        })
+        .eq("id", input.card.id);
+      if (error) throw error;
+    },
+    onSuccess: () => invalidate(),
+    onError: (e: Error) => toast.error(e.message || "Couldn't save your progress"),
   });
 }
 

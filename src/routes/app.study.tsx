@@ -8,8 +8,10 @@ import { toast } from "sonner";
 import {
   useClasses, useFlashcards, useGrades, useNotes, useSaveFlashcard, useSaveNote,
   useDeleteFlashcard, useDeleteNote, useStudySessions, useLogStudySession,
+  useRecordFlashcardResult,
   type FlashcardRow, type NoteRow,
 } from "@/hooks/use-study-data";
+import { AITools } from "@/components/AITools";
 import { computeGpa } from "@/lib/gpa";
 import { colorOf } from "@/lib/schedule";
 
@@ -30,6 +32,7 @@ const tools = [
   { id: "flash", icon: Layers, label: "Flashcards", desc: "Your own cards", tint: "oklch(0.6 0.22 300)" },
   { id: "quiz", icon: BrainCircuit, label: "AI Quiz", desc: "From your material", tint: "oklch(0.6 0.2 275)" },
   { id: "notes", icon: FileText, label: "Notes", desc: "Organize by class", tint: "oklch(0.65 0.18 250)" },
+  { id: "tools", icon: Sparkles, label: "AI Tools", desc: "Summaries, plans, cards", tint: "oklch(0.62 0.21 340)" },
 ] as const;
 
 function Study() {
@@ -49,7 +52,7 @@ function Study() {
             onClick={() => setActive(t.id)}
             className={`rounded-3xl p-4 text-left shadow-soft transition active:scale-[0.98] ${
               active === t.id ? "ring-2 ring-primary" : ""
-            }`}
+            } ${t.id === "tools" ? "col-span-2" : ""}`}
             style={{ background: `color-mix(in oklab, ${t.tint} 10%, var(--card))` }}
           >
             <div className="grid size-10 place-items-center rounded-3xl" style={{ background: `color-mix(in oklab, ${t.tint} 22%, var(--card))` }}>
@@ -66,6 +69,7 @@ function Study() {
         {active === "flash" && <Flashcards />}
         {active === "quiz" && <AIQuiz />}
         {active === "notes" && <Notes />}
+        {active === "tools" && <AITools />}
       </div>
 
       <Link to="/app/grades" className="mt-6 flex items-center gap-3 rounded-3xl bg-card p-4 shadow-soft">
@@ -220,6 +224,11 @@ function Flashcards() {
   const { data: classes = [] } = useClasses();
   const save = useSaveFlashcard();
   const del = useDeleteFlashcard();
+  const record = useRecordFlashcardResult();
+  const reviewed = cards.filter((c) => c.times_seen > 0);
+  const accuracy = reviewed.length
+    ? Math.round((reviewed.reduce((s, c) => s + c.times_correct, 0) / reviewed.reduce((s, c) => s + c.times_seen, 0)) * 100)
+    : null;
 
   const [filter, setFilter] = useState("");
   const [draft, setDraft] = useState<{ id?: string; question: string; answer: string; class_id: string } | null>(null);
@@ -260,6 +269,11 @@ function Flashcards() {
         />
       ) : (
         <>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            {accuracy === null
+              ? "Flip a card and mark it to start tracking progress."
+              : `Reviewed ${reviewed.length} of ${cards.length} cards · ${accuracy}% known`}
+          </p>
           <div className="mt-3 flex items-center justify-between text-xs">
             <span className="font-semibold uppercase tracking-wider text-muted-foreground">
               {classes.find((c) => c.id === card?.class_id)?.subject ?? "Unassigned"}
@@ -278,13 +292,35 @@ function Flashcards() {
               <p className="mt-4 text-xs opacity-70">Tap to flip</p>
             </div>
           </button>
+          {card && card.times_seen > 0 && (
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Known {card.times_correct} of {card.times_seen} reviews
+            </p>
+          )}
           <div className="mt-3 flex items-center gap-2">
-            <button
-              onClick={() => { setFlip(false); setI((n) => (n + 1) % shown.length); }}
-              className="flex-1 rounded-3xl bg-card py-3 text-sm font-semibold shadow-soft active:scale-95"
-            >
-              Next card
-            </button>
+            {flip && card ? (
+              <>
+                <button
+                  onClick={() => { record.mutate({ card, correct: false }); setFlip(false); setI((n) => (n + 1) % shown.length); }}
+                  className="flex-1 rounded-3xl bg-destructive/10 py-3 text-sm font-semibold text-destructive shadow-soft active:scale-95"
+                >
+                  Missed it
+                </button>
+                <button
+                  onClick={() => { record.mutate({ card, correct: true }); setFlip(false); setI((n) => (n + 1) % shown.length); }}
+                  className="flex-1 rounded-3xl bg-primary/10 py-3 text-sm font-semibold text-primary shadow-soft active:scale-95"
+                >
+                  Got it
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => { setFlip(false); setI((n) => (n + 1) % shown.length); }}
+                className="flex-1 rounded-3xl bg-card py-3 text-sm font-semibold shadow-soft active:scale-95"
+              >
+                Next card
+              </button>
+            )}
             {card && (
               <>
                 <button
@@ -365,17 +401,20 @@ function Notes() {
   const save = useSaveNote();
   const del = useDeleteNote();
   const [draft, setDraft] = useState<{ id?: string; title: string; content: string; class_id: string } | null>(null);
+  const [query, setQuery] = useState("");
 
   const grouped = useMemo(() => {
     const map = new Map<string, NoteRow[]>();
+    const q = query.trim().toLowerCase();
     for (const n of notes) {
+      if (q && !n.title.toLowerCase().includes(q) && !n.content.toLowerCase().includes(q)) continue;
       const key = n.class_id ?? "";
       const list = map.get(key);
       if (list) list.push(n);
       else map.set(key, [n]);
     }
     return Array.from(map.entries());
-  }, [notes]);
+  }, [notes, query]);
 
   const valid = !!draft?.title.trim();
 
@@ -390,6 +429,18 @@ function Notes() {
         <Plus className="size-4" /> New note
       </button>
 
+      {notes.length > 0 && (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your notes"
+          aria-label="Search notes"
+          className="mt-3 w-full rounded-full border border-border bg-card px-4 py-2.5 text-sm outline-none"
+        />
+      )}
+      {notes.length > 0 && grouped.length === 0 && (
+        <p className="mt-4 text-center text-xs text-muted-foreground">No notes match "{query}".</p>
+      )}
       {notes.length === 0 ? (
         <Empty title="No notes yet." text="Create a note and link it to one of your classes." />
       ) : (
