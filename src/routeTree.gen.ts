@@ -25,7 +25,6 @@ import { Route as AppGradesRouteImport } from './routes/app.grades'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAiRouteImport } from './routes/app.ai'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
-import { Route as ApiToolsRouteImport } from './routes/api/tools'
 import { Route as ApiQuizRouteImport } from './routes/api/quiz'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -109,11 +108,6 @@ const ApiTutorRoute = ApiTutorRouteImport.update({
   path: '/api/tutor',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiToolsRoute = ApiToolsRouteImport.update({
-  id: '/api/tools',
-  path: '/api/tools',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiQuizRoute = ApiQuizRouteImport.update({
   id: '/api/quiz',
   path: '/api/quiz',
@@ -133,7 +127,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
-  '/api/tools': typeof ApiToolsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
@@ -153,7 +146,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
-  '/api/tools': typeof ApiToolsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
@@ -175,7 +167,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
   '/api/quiz': typeof ApiQuizRoute
-  '/api/tools': typeof ApiToolsRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
@@ -198,7 +189,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
-    | '/api/tools'
     | '/api/tutor'
     | '/app/ai'
     | '/app/classes'
@@ -218,7 +208,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
-    | '/api/tools'
     | '/api/tutor'
     | '/app/ai'
     | '/app/classes'
@@ -239,7 +228,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/api/chat'
     | '/api/quiz'
-    | '/api/tools'
     | '/api/tutor'
     | '/app/ai'
     | '/app/classes'
@@ -261,7 +249,6 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiQuizRoute: typeof ApiQuizRoute
-  ApiToolsRoute: typeof ApiToolsRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -379,13 +366,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTutorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/tools': {
-      id: '/api/tools'
-      path: '/api/tools'
-      fullPath: '/api/tools'
-      preLoaderRoute: typeof ApiToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/quiz': {
       id: '/api/quiz'
       path: '/api/quiz'
@@ -439,7 +419,6 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
   ApiQuizRoute: ApiQuizRoute,
-  ApiToolsRoute: ApiToolsRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
