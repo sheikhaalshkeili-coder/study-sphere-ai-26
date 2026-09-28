@@ -401,17 +401,20 @@ function Notes() {
   const save = useSaveNote();
   const del = useDeleteNote();
   const [draft, setDraft] = useState<{ id?: string; title: string; content: string; class_id: string } | null>(null);
+  const [query, setQuery] = useState("");
 
   const grouped = useMemo(() => {
     const map = new Map<string, NoteRow[]>();
+    const q = query.trim().toLowerCase();
     for (const n of notes) {
+      if (q && !n.title.toLowerCase().includes(q) && !n.content.toLowerCase().includes(q)) continue;
       const key = n.class_id ?? "";
       const list = map.get(key);
       if (list) list.push(n);
       else map.set(key, [n]);
     }
     return Array.from(map.entries());
-  }, [notes]);
+  }, [notes, query]);
 
   const valid = !!draft?.title.trim();
 
@@ -426,6 +429,18 @@ function Notes() {
         <Plus className="size-4" /> New note
       </button>
 
+      {notes.length > 0 && (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your notes"
+          aria-label="Search notes"
+          className="mt-3 w-full rounded-full border border-border bg-card px-4 py-2.5 text-sm outline-none"
+        />
+      )}
+      {notes.length > 0 && grouped.length === 0 && (
+        <p className="mt-4 text-center text-xs text-muted-foreground">No notes match "{query}".</p>
+      )}
       {notes.length === 0 ? (
         <Empty title="No notes yet." text="Create a note and link it to one of your classes." />
       ) : (
