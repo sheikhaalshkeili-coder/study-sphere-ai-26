@@ -77,7 +77,7 @@ export function useUpdateConversation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (input: { id: string; title?: string; class_id?: string | null }) => {
-      const patch: Record<string, unknown> = {};
+      const patch: { title?: string; class_id?: string | null } = {};
       if (input.title !== undefined) patch.title = input.title.slice(0, 80);
       if (input.class_id !== undefined) patch.class_id = input.class_id || null;
       const { error } = await supabase.from("tutor_conversations").update(patch).eq("id", input.id);
