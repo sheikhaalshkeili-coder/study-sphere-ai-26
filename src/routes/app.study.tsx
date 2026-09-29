@@ -417,6 +417,18 @@ function Notes() {
       >
         <Plus className="size-4" /> New note
       </button>
+      {notes.length > 0 && (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your notes"
+          aria-label="Search notes"
+          className="mt-3 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none"
+        />
+      )}
+      {notes.length > 0 && grouped.length === 0 && (
+        <p className="mt-4 text-center text-sm text-muted-foreground">No notes match "{query}".</p>
+      )}
 
       {notes.length === 0 ? (
         <Empty title="No notes yet." text="Create a note and link it to one of your classes." />
