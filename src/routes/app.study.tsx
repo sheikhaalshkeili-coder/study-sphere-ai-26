@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import {
   useClasses, useFlashcards, useGrades, useNotes, useSaveFlashcard, useSaveNote,
   useDeleteFlashcard, useDeleteNote, useStudySessions, useLogStudySession,
+  useReviewFlashcard, useBulkCreateFlashcards,
   type FlashcardRow, type NoteRow,
 } from "@/hooks/use-study-data";
 import { computeGpa } from "@/lib/gpa";
@@ -220,6 +221,7 @@ function Flashcards() {
   const { data: classes = [] } = useClasses();
   const save = useSaveFlashcard();
   const del = useDeleteFlashcard();
+  const review = useReviewFlashcard();
 
   const [filter, setFilter] = useState("");
   const [draft, setDraft] = useState<{ id?: string; question: string; answer: string; class_id: string } | null>(null);
@@ -278,6 +280,29 @@ function Flashcards() {
               <p className="mt-4 text-xs opacity-70">Tap to flip</p>
             </div>
           </button>
+          {card && (
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              {card.times_seen === 0
+                ? "Not reviewed yet"
+                : `Reviewed ${card.times_seen}× · ${Math.round((card.times_correct / card.times_seen) * 100)}% known`}
+            </p>
+          )}
+          {card && flip && (
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button
+                onClick={() => { review.mutate({ card, correct: false }); setFlip(false); setI((n) => (n + 1) % shown.length); }}
+                className="rounded-3xl bg-destructive/10 py-3 text-sm font-semibold text-destructive active:scale-95"
+              >
+                Still learning
+              </button>
+              <button
+                onClick={() => { review.mutate({ card, correct: true }); setFlip(false); setI((n) => (n + 1) % shown.length); }}
+                className="rounded-3xl bg-success/15 py-3 text-sm font-semibold text-success active:scale-95"
+              >
+                Got it
+              </button>
+            </div>
+          )}
           <div className="mt-3 flex items-center gap-2">
             <button
               onClick={() => { setFlip(false); setI((n) => (n + 1) % shown.length); }}
@@ -365,17 +390,20 @@ function Notes() {
   const save = useSaveNote();
   const del = useDeleteNote();
   const [draft, setDraft] = useState<{ id?: string; title: string; content: string; class_id: string } | null>(null);
+  const [query, setQuery] = useState("");
 
   const grouped = useMemo(() => {
+    const q = query.trim().toLowerCase();
     const map = new Map<string, NoteRow[]>();
     for (const n of notes) {
+      if (q && !n.title.toLowerCase().includes(q) && !n.content.toLowerCase().includes(q)) continue;
       const key = n.class_id ?? "";
       const list = map.get(key);
       if (list) list.push(n);
       else map.set(key, [n]);
     }
     return Array.from(map.entries());
-  }, [notes]);
+  }, [notes, query]);
 
   const valid = !!draft?.title.trim();
 
@@ -389,6 +417,18 @@ function Notes() {
       >
         <Plus className="size-4" /> New note
       </button>
+      {notes.length > 0 && (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your notes"
+          aria-label="Search notes"
+          className="mt-3 w-full rounded-3xl border border-border bg-card px-4 py-3 text-sm outline-none"
+        />
+      )}
+      {notes.length > 0 && grouped.length === 0 && (
+        <p className="mt-4 text-center text-sm text-muted-foreground">No notes match "{query}".</p>
+      )}
 
       {notes.length === 0 ? (
         <Empty title="No notes yet." text="Create a note and link it to one of your classes." />
@@ -511,6 +551,9 @@ function AIQuiz() {
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [savedCards, setSavedCards] = useState(false);
+  const bulk = useBulkCreateFlashcards();
+  useEffect(() => { setSavedCards(false); }, [questions]);
 
   const scopedNotes = classId ? notes.filter((n) => n.class_id === classId) : notes;
   const scopedCards = classId ? cards.filter((c) => c.class_id === classId) : cards;
@@ -633,6 +676,20 @@ function AIQuiz() {
             New quiz
           </button>
         </div>
+        <button
+          disabled={bulk.isPending || savedCards}
+          onClick={async () => {
+            await bulk.mutateAsync({
+              cards: questions.map((q) => ({ question: q.question, answer: q.answer })),
+              class_id: classId || null,
+            });
+            setSavedCards(true);
+          }}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-3xl border border-border bg-card py-3.5 text-sm font-semibold active:scale-95 disabled:opacity-50"
+        >
+          <Layers className="size-4" />
+          {savedCards ? "Saved as flashcards" : bulk.isPending ? "Saving…" : "Save these questions as flashcards"}
+        </button>
       </div>
     );
   }
