@@ -27,6 +27,8 @@ import { Route as AppAiRouteImport } from './routes/app.ai'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as ApiQuizRouteImport } from './routes/api/quiz'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiVoiceTranscribeRouteImport } from './routes/api/voice.transcribe'
+import { Route as ApiVoiceSpeakRouteImport } from './routes/api/voice.speak'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -118,6 +120,16 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVoiceTranscribeRoute = ApiVoiceTranscribeRouteImport.update({
+  id: '/api/voice/transcribe',
+  path: '/api/voice/transcribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVoiceSpeakRoute = ApiVoiceSpeakRouteImport.update({
+  id: '/api/voice/speak',
+  path: '/api/voice/speak',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,6 +150,8 @@ export interface FileRoutesByFullPath {
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
+  '/api/voice/speak': typeof ApiVoiceSpeakRoute
+  '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -157,6 +171,8 @@ export interface FileRoutesByTo {
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app': typeof AppIndexRoute
+  '/api/voice/speak': typeof ApiVoiceSpeakRoute
+  '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -178,6 +194,8 @@ export interface FileRoutesById {
   '/app/study': typeof AppStudyRoute
   '/app/tutor': typeof AppTutorRoute
   '/app/': typeof AppIndexRoute
+  '/api/voice/speak': typeof ApiVoiceSpeakRoute
+  '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -200,6 +218,8 @@ export interface FileRouteTypes {
     | '/app/study'
     | '/app/tutor'
     | '/app/'
+    | '/api/voice/speak'
+    | '/api/voice/transcribe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -219,6 +239,8 @@ export interface FileRouteTypes {
     | '/app/study'
     | '/app/tutor'
     | '/app'
+    | '/api/voice/speak'
+    | '/api/voice/transcribe'
   id:
     | '__root__'
     | '/'
@@ -239,6 +261,8 @@ export interface FileRouteTypes {
     | '/app/study'
     | '/app/tutor'
     | '/app/'
+    | '/api/voice/speak'
+    | '/api/voice/transcribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -250,6 +274,8 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiQuizRoute: typeof ApiQuizRoute
   ApiTutorRoute: typeof ApiTutorRoute
+  ApiVoiceSpeakRoute: typeof ApiVoiceSpeakRoute
+  ApiVoiceTranscribeRoute: typeof ApiVoiceTranscribeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -380,6 +406,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/voice/transcribe': {
+      id: '/api/voice/transcribe'
+      path: '/api/voice/transcribe'
+      fullPath: '/api/voice/transcribe'
+      preLoaderRoute: typeof ApiVoiceTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/voice/speak': {
+      id: '/api/voice/speak'
+      path: '/api/voice/speak'
+      fullPath: '/api/voice/speak'
+      preLoaderRoute: typeof ApiVoiceSpeakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -420,6 +460,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiQuizRoute: ApiQuizRoute,
   ApiTutorRoute: ApiTutorRoute,
+  ApiVoiceSpeakRoute: ApiVoiceSpeakRoute,
+  ApiVoiceTranscribeRoute: ApiVoiceTranscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
