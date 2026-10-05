@@ -5,6 +5,11 @@ import {
   ArrowLeft,
   GraduationCap,
   Info,
+  Mic,
+  MicOff,
+  Volume2,
+  Square,
+  Loader2,
   MessageSquarePlus,
   RefreshCw,
   Send,
@@ -12,6 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useProfile } from "@/hooks/use-profile";
+import { useVoice } from "@/hooks/use-voice";
 import {
   useAssignments,
   useClasses,
@@ -97,6 +103,10 @@ function TutorPage() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const voice = useVoice();
+  const [voiceMode, setVoiceMode] = useState(false);
+  const voiceModeRef = useRef(false);
+  useEffect(() => { voiceModeRef.current = voiceMode; }, [voiceMode]);
   const lastPrompt = useRef<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -169,7 +179,7 @@ function TutorPage() {
     return created.id;
   }
 
-  async function run(prompt: string, existing: TutorMessage[], conversationId: string) {
+  async function run(prompt: string, existing: TutorMessage[], conversationId: string): Promise<string | null> {
     setPending(true);
     setError(null);
     setStreaming("");
@@ -229,9 +239,11 @@ function TutorPage() {
       await saveTutorMessage(conversationId, "assistant", full);
       qc.invalidateQueries({ queryKey: ["tutor_messages", conversationId] });
       qc.invalidateQueries({ queryKey: ["tutor_conversations"] });
+      return full;
     } catch {
       setStreaming("");
       setError("Something went wrong — try again");
+      return null;
     } finally {
       setPending(false);
     }
@@ -246,7 +258,31 @@ function TutorPage() {
     setInput("");
     await saveTutorMessage(conversationId, "user", t);
     if (base.length === 0) await updateConv.mutateAsync({ id: conversationId, title: t });
-    await run(t, base, conversationId);
+    return run(t, base, conversationId);
+  }
+
+  // Voice conversation: listen → transcribe → tutor reply → speak → listen again.
+  async function startVoice() {
+    setVoiceMode(true);
+    voiceModeRef.current = true;
+    await voice.startListening();
+  }
+  function stopVoice() {
+    setVoiceMode(false);
+    voiceModeRef.current = false;
+    voice.cancel();
+  }
+  async function finishTurn() {
+    const text = await voice.stopListening();
+    if (!text) {
+      if (voiceModeRef.current) await voice.startListening();
+      return;
+    }
+    const reply = await send(text);
+    if (reply && voiceModeRef.current) {
+      await voice.speak(reply);
+      if (voiceModeRef.current) await voice.startListening();
+    }
   }
 
   async function retry() {
@@ -382,6 +418,12 @@ function TutorPage() {
                 see where you went wrong.
               </p>
             </div>
+            <button
+              onClick={startVoice}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-brand py-4 text-sm font-semibold text-white shadow-glow active:scale-95"
+            >
+              <Mic className="size-5" /> Talk to Tutor
+            </button>
             <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Try asking</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {PROMPTS.map((p) => (
@@ -448,23 +490,81 @@ function TutorPage() {
       </div>
 
       <div className="sticky bottom-24 mt-4 pb-2">
-        <div className="glass flex items-center gap-2 rounded-full p-1.5 shadow-soft">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send(input)}
-            placeholder="Ask your tutor anything..."
-            className="flex-1 bg-transparent px-4 py-2.5 text-sm outline-none placeholder:text-muted-foreground"
-          />
-          <button
-            onClick={() => send(input)}
-            disabled={pending || !input.trim()}
-            aria-label="Send message"
-            className="grid size-10 place-items-center rounded-full bg-gradient-brand text-white shadow-glow transition active:scale-95 disabled:opacity-40"
-          >
-            <Send className="size-4" strokeWidth={2.5} />
-          </button>
-        </div>
+        {voice.error && (
+          <p className="mb-2 rounded-3xl bg-destructive/10 px-4 py-2 text-xs font-medium text-destructive">{voice.error}</p>
+        )}
+        {voiceMode ? (
+          <div className="glass rounded-3xl p-4 shadow-soft">
+            <div className="flex items-center gap-3">
+              <span className="relative grid size-12 place-items-center rounded-full bg-gradient-brand text-white shadow-glow">
+                {voice.state === "listening" && <span className="absolute inset-0 animate-ping rounded-full bg-primary/40" />}
+                {voice.state === "speaking" ? <Volume2 className="size-5" /> : voice.state === "listening" ? <Mic className="size-5" /> : <Loader2 className="size-5 animate-spin" />}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">
+                  {voice.state === "listening" ? "Listening…" : voice.state === "transcribing" ? "Understanding you…" : voice.state === "speaking" ? "Tutor is speaking…" : pending ? "Tutor is thinking…" : "Voice conversation"}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {voice.state === "listening" ? "Tap “Done speaking” when you finish." : voice.state === "speaking" ? "Tap Stop to interrupt." : "Your conversation is saved as text below."}
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+              {voice.state === "listening" ? (
+                <button onClick={finishTurn} className="flex-1 rounded-full bg-gradient-brand py-2.5 text-xs font-semibold text-white shadow-glow active:scale-95">
+                  Done speaking
+                </button>
+              ) : voice.state === "speaking" ? (
+                <button onClick={async () => { voice.stopAudio(); if (voiceModeRef.current) await voice.startListening(); }} className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-card py-2.5 text-xs font-semibold shadow-soft active:scale-95">
+                  <Square className="size-3.5" /> Stop
+                </button>
+              ) : (
+                <button disabled={pending || voice.state !== "idle"} onClick={() => voice.startListening()} className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-card py-2.5 text-xs font-semibold shadow-soft active:scale-95 disabled:opacity-40">
+                  <Mic className="size-3.5" /> Speak
+                </button>
+              )}
+              {voice.canReplay && voice.state === "idle" && !pending && (
+                <button onClick={() => voice.replay()} aria-label="Replay last answer" className="grid size-10 place-items-center rounded-full bg-card shadow-soft active:scale-95">
+                  <Volume2 className="size-4" />
+                </button>
+              )}
+              <button onClick={stopVoice} className="flex items-center gap-1.5 rounded-full bg-destructive/10 px-4 text-xs font-semibold text-destructive active:scale-95">
+                <MicOff className="size-3.5" /> End
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="glass flex items-center gap-2 rounded-full p-1.5 shadow-soft">
+            <button
+              onClick={startVoice}
+              disabled={pending}
+              aria-label="Talk to tutor"
+              className="grid size-10 place-items-center rounded-full bg-card text-primary shadow-soft transition active:scale-95 disabled:opacity-40"
+            >
+              <Mic className="size-4" />
+            </button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && send(input)}
+              placeholder="Ask your tutor anything..."
+              className="flex-1 bg-transparent px-2 py-2.5 text-sm outline-none placeholder:text-muted-foreground"
+            />
+            {voice.canReplay && (
+              <button onClick={() => voice.replay()} aria-label="Replay last spoken answer" className="grid size-10 place-items-center rounded-full text-muted-foreground active:scale-95">
+                <Volume2 className="size-4" />
+              </button>
+            )}
+            <button
+              onClick={() => send(input)}
+              disabled={pending || !input.trim()}
+              aria-label="Send message"
+              className="grid size-10 place-items-center rounded-full bg-gradient-brand text-white shadow-glow transition active:scale-95 disabled:opacity-40"
+            >
+              <Send className="size-4" strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
