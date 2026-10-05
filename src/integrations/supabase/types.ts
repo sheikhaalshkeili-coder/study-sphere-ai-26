@@ -144,6 +144,38 @@ export type Database = {
         }
         Relationships: []
       }
+      deck_reports: {
+        Row: {
+          created_at: string
+          deck_id: string
+          id: string
+          reason: string
+          reporter_id: string
+        }
+        Insert: {
+          created_at?: string
+          deck_id: string
+          id?: string
+          reason: string
+          reporter_id: string
+        }
+        Update: {
+          created_at?: string
+          deck_id?: string
+          id?: string
+          reason?: string
+          reporter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deck_reports_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "shared_decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exams: {
         Row: {
           class_id: string | null
@@ -235,6 +267,27 @@ export type Database = {
           },
         ]
       }
+      gems_enrollments: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       grades: {
         Row: {
           category: string
@@ -325,37 +378,91 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           classroom_connected: boolean
+          community_visible: boolean
           created_at: string
+          display_name: string | null
           education_level: Database["public"]["Enums"]["education_level"] | null
           full_name: string
+          gems_status: string | null
+          gems_verified: boolean
           grade_year: string | null
           id: string
           school_name: string | null
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           classroom_connected?: boolean
+          community_visible?: boolean
           created_at?: string
+          display_name?: string | null
           education_level?:
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
+          gems_status?: string | null
+          gems_verified?: boolean
           grade_year?: string | null
           id: string
           school_name?: string | null
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           classroom_connected?: boolean
+          community_visible?: boolean
           created_at?: string
+          display_name?: string | null
           education_level?:
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
+          gems_status?: string | null
+          gems_verified?: boolean
           grade_year?: string | null
           id?: string
           school_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shared_decks: {
+        Row: {
+          card_count: number
+          cards: Json
+          course_id: string
+          created_at: string
+          creator_name: string
+          id: string
+          owner_id: string
+          title: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          card_count?: number
+          cards?: Json
+          course_id: string
+          created_at?: string
+          creator_name?: string
+          id?: string
+          owner_id: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          card_count?: number
+          cards?: Json
+          course_id?: string
+          created_at?: string
+          creator_name?: string
+          id?: string
+          owner_id?: string
+          title?: string
+          topic?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -479,7 +586,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      community_members: {
+        Args: { _course: string }
+        Returns: {
+          avatar_url: string
+          is_me: boolean
+          name: string
+          user_id: string
+        }[]
+      }
+      is_enrolled: { Args: { _course: string; _uid: string }; Returns: boolean }
+      is_gems_member: { Args: { _uid: string }; Returns: boolean }
     }
     Enums: {
       education_level: "high_school" | "university"
