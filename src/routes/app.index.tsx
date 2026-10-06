@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import {
-  Sparkles, Brain, BookOpen, ScanLine, LayoutList, Flame, Timer,
+  Sparkles, Brain, Users, BookOpen, ScanLine, LayoutList, Flame, Timer,
   GraduationCap, CheckCircle2, ChevronRight, Bell, Loader2, StickyNote,
 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
@@ -196,11 +196,12 @@ function Dashboard() {
       {/* Quick actions */}
       <div className="mt-6">
         <SectionHeader title="Quick actions" />
-        <div className="mt-3 grid grid-cols-4 gap-3">
+        <div className="mt-3 grid grid-cols-5 gap-2">
           <QuickAction icon={Brain} label="Tutor Me" to="/app/tutor" tint="oklch(0.6 0.2 275)" />
           <QuickAction icon={LayoutList} label="Classes" to="/app/classes" tint="oklch(0.65 0.18 250)" />
           <QuickAction icon={BookOpen} label="Planner" to="/app/planner" tint="oklch(0.6 0.22 320)" />
           <QuickAction icon={ScanLine} label="Study" to="/app/study" tint="oklch(0.65 0.18 200)" />
+          <QuickAction icon={Users} label="Community" to="/app/community" tint="oklch(0.62 0.17 160)" />
         </div>
       </div>
 

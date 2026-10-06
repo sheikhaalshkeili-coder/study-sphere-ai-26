@@ -11,11 +11,11 @@ export const Route = createFileRoute("/app")({
     if (location.pathname !== "/app/onboarding") {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("education_level, grade_year, school_name")
+        .select("education_level, grade_year, school_name, gems_status")
         .eq("id", data.session.user.id)
         .maybeSingle();
       const incomplete =
-        !profile?.education_level || !profile?.grade_year?.trim() || !profile?.school_name?.trim();
+        !profile?.education_level || !profile?.grade_year?.trim() || !profile?.school_name?.trim() || !profile?.gems_status;
       if (incomplete) throw redirect({ to: "/app/onboarding" });
     }
   },
