@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import {
-  Sparkles, Brain, BookOpen, ScanLine, LayoutList, Flame, Timer,
+  Sparkles, Brain, Users, BookOpen, ScanLine, LayoutList, Flame, Timer,
   GraduationCap, CheckCircle2, ChevronRight, Bell, Loader2, StickyNote,
 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
