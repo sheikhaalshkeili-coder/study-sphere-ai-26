@@ -196,7 +196,7 @@ function Dashboard() {
       {/* Quick actions */}
       <div className="mt-6">
         <SectionHeader title="Quick actions" />
-        <div className="mt-3 grid grid-cols-4 gap-3">
+        <div className="mt-3 grid grid-cols-5 gap-2">
           <QuickAction icon={Brain} label="Tutor Me" to="/app/tutor" tint="oklch(0.6 0.2 275)" />
           <QuickAction icon={LayoutList} label="Classes" to="/app/classes" tint="oklch(0.65 0.18 250)" />
           <QuickAction icon={BookOpen} label="Planner" to="/app/planner" tint="oklch(0.6 0.22 320)" />
