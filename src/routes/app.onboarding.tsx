@@ -3,6 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { GraduationCap, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { GemsQuestion } from "./auth";
 
 export const Route = createFileRoute("/app/onboarding")({
   head: () => ({
@@ -21,6 +22,7 @@ function Onboarding() {
   const [level, setLevel] = useState<"high_school" | "university">("high_school");
   const [gradeYear, setGradeYear] = useState("");
   const [school, setSchool] = useState("");
+  const [gems, setGems] = useState<"member" | "not_member" | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -28,16 +30,17 @@ function Onboarding() {
       if (!data.user) return;
       const { data: p } = await supabase
         .from("profiles")
-        .select("education_level, grade_year, school_name")
+        .select("education_level, grade_year, school_name, gems_status")
         .eq("id", data.user.id)
         .maybeSingle();
       if (p?.education_level) setLevel(p.education_level as "high_school" | "university");
       if (p?.grade_year) setGradeYear(p.grade_year);
       if (p?.school_name) setSchool(p.school_name);
+      if (p?.gems_status) setGems(p.gems_status as "member" | "not_member");
     });
   }, []);
 
-  const valid = gradeYear.trim().length > 0 && school.trim().length > 0;
+  const valid = gradeYear.trim().length > 0 && school.trim().length > 0 && gems !== null;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -58,6 +61,7 @@ function Onboarding() {
           education_level: level,
           grade_year: gradeYear.trim(),
           school_name: school.trim(),
+          gems_status: gems,
         },
         { onConflict: "id" },
       );
@@ -120,10 +124,12 @@ function Onboarding() {
             value={school}
             onChange={(e) => setSchool(e.target.value)}
             maxLength={120}
-            placeholder="Lincoln High"
+            placeholder="Your school"
             className="input"
           />
         </label>
+
+        <GemsQuestion value={gems} onChange={setGems} />
 
         <button
           type="submit"

@@ -201,6 +201,7 @@ function Dashboard() {
           <QuickAction icon={LayoutList} label="Classes" to="/app/classes" tint="oklch(0.65 0.18 250)" />
           <QuickAction icon={BookOpen} label="Planner" to="/app/planner" tint="oklch(0.6 0.22 320)" />
           <QuickAction icon={ScanLine} label="Study" to="/app/study" tint="oklch(0.65 0.18 200)" />
+          <QuickAction icon={Users} label="Community" to="/app/community" tint="oklch(0.62 0.17 160)" />
         </div>
       </div>
 

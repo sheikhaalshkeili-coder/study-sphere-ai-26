@@ -29,6 +29,8 @@ import { Route as AppStudyRouteImport } from './routes/app.study'
 import { Route as AppTutorRouteImport } from './routes/app.tutor'
 import { Route as ApiVoiceSpeakRouteImport } from './routes/api/voice.speak'
 import { Route as ApiVoiceTranscribeRouteImport } from './routes/api/voice.transcribe'
+import { Route as AppCommunityIndexRouteImport } from './routes/app.community.index'
+import { Route as AppCommunityCourseIdRouteImport } from './routes/app.community.$courseId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -130,6 +132,16 @@ const ApiVoiceTranscribeRoute = ApiVoiceTranscribeRouteImport.update({
   path: '/api/voice/transcribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCommunityIndexRoute = AppCommunityIndexRouteImport.update({
+  id: '/community/',
+  path: '/community/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCommunityCourseIdRoute = AppCommunityCourseIdRouteImport.update({
+  id: '/community/$courseId',
+  path: '/community/$courseId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,6 +164,8 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
   '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
+  '/app/community/$courseId': typeof AppCommunityCourseIdRoute
+  '/app/community/': typeof AppCommunityIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -173,6 +187,8 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
   '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
+  '/app/community/$courseId': typeof AppCommunityCourseIdRoute
+  '/app/community': typeof AppCommunityIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -196,6 +212,8 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
   '/api/voice/transcribe': typeof ApiVoiceTranscribeRoute
+  '/app/community/$courseId': typeof AppCommunityCourseIdRoute
+  '/app/community/': typeof AppCommunityIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -220,6 +238,8 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/voice/speak'
     | '/api/voice/transcribe'
+    | '/app/community/$courseId'
+    | '/app/community/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -241,6 +261,8 @@ export interface FileRouteTypes {
     | '/app'
     | '/api/voice/speak'
     | '/api/voice/transcribe'
+    | '/app/community/$courseId'
+    | '/app/community'
   id:
     | '__root__'
     | '/'
@@ -263,6 +285,8 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/voice/speak'
     | '/api/voice/transcribe'
+    | '/app/community/$courseId'
+    | '/app/community/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -420,6 +444,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiVoiceTranscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/community/': {
+      id: '/app/community/'
+      path: '/community'
+      fullPath: '/app/community/'
+      preLoaderRoute: typeof AppCommunityIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/community/$courseId': {
+      id: '/app/community/$courseId'
+      path: '/community/$courseId'
+      fullPath: '/app/community/$courseId'
+      preLoaderRoute: typeof AppCommunityCourseIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -434,6 +472,8 @@ interface AppRouteChildren {
   AppStudyRoute: typeof AppStudyRoute
   AppTutorRoute: typeof AppTutorRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppCommunityCourseIdRoute: typeof AppCommunityCourseIdRoute
+  AppCommunityIndexRoute: typeof AppCommunityIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -447,6 +487,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppStudyRoute: AppStudyRoute,
   AppTutorRoute: AppTutorRoute,
   AppIndexRoute: AppIndexRoute,
+  AppCommunityCourseIdRoute: AppCommunityCourseIdRoute,
+  AppCommunityIndexRoute: AppCommunityIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
