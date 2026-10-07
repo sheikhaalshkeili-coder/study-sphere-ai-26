@@ -105,6 +105,7 @@ export type Database = {
       classes: {
         Row: {
           color: string
+          course_id: string | null
           created_at: string
           day_of_week: number | null
           end_time: string | null
@@ -118,6 +119,7 @@ export type Database = {
         }
         Insert: {
           color?: string
+          course_id?: string | null
           created_at?: string
           day_of_week?: number | null
           end_time?: string | null
@@ -131,6 +133,7 @@ export type Database = {
         }
         Update: {
           color?: string
+          course_id?: string | null
           created_at?: string
           day_of_week?: number | null
           end_time?: string | null
