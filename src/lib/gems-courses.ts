@@ -21,15 +21,13 @@ const RAW: Record<string, string[]> = {
     "Arabic Standard Non-Native 10", "IBDP I and II Arabic B (SL/HL)", "Arabic Standard Non-Native 11",
     "Arabic Standard Non-Native 12",
   ],
-  French: [
+  "World Languages": [
     "MS French 1", "MS French 1-2", "MS French 2", "HS French I", "HS French II", "HS French III",
     "IBDP I and II French Ab Initio (SL)", "IBDP I and II French B (SL/HL)",
-  ],
-  Spanish: [
     "MS Spanish 1", "MS Spanish 1-2", "MS Spanish 2", "HS Spanish I", "HS Spanish II", "HS Spanish III",
     "IBDP I and II Spanish Ab Initio (SL)", "IBDP I and II Spanish (SL/HL)",
   ],
-  "Social Studies & MSCE": [
+  "Social Studies": [
     "Social Studies 6", "Social Studies 7", "Social Studies 8", "Social Studies 9", "World Studies 10",
     "Geography", "Psychology", "Global Politics", "Economics", "AP Psychology", "AP World History: Modern",
     "AP Macroeconomics", "AP Microeconomics", "IBDP I and II History (SL/HL)",
@@ -55,7 +53,7 @@ const RAW: Record<string, string[]> = {
     "AP Precalculus", "AP Calculus AB", "IBDP I and II Math Applications & Interpretations (SL/HL)",
     "IBDP I and II Math Analysis & Approaches (SL/HL)",
   ],
-  "Visual Arts & Design": [
+  "Visual Arts / Design": [
     "Grade 6 Elective Rotation", "MS Exploratory Arts – Visual Arts 6", "MS Design 7", "MS Design 8",
     "HS Design", "Visual Arts 1", "Visual Arts 2", "IBDP I and II Visual Arts (SL/HL)",
   ],

@@ -11,6 +11,7 @@ export type ClassRow = {
   day_of_week: number | null;
   start_time: string | null;
   end_time: string | null;
+  course_id: string | null;
 };
 
 export type AssignmentRow = {
@@ -46,9 +47,9 @@ export function useClasses() {
     queryFn: async (): Promise<ClassRow[]> => {
       const { data, error } = await supabase
         .from("classes")
-        .select("id, subject, teacher, room, color, day_of_week, start_time, end_time")
-        .order("day_of_week", { ascending: true })
-        .order("start_time", { ascending: true });
+        .select("id, subject, teacher, room, color, day_of_week, start_time, end_time, course_id")
+        .order("subject", { ascending: true })
+;
       if (error) throw error;
       return (data ?? []) as ClassRow[];
     },
