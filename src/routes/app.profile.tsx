@@ -136,9 +136,9 @@ function Profile() {
               <GraduationCap className="size-4 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold">My classes</p>
+              <p className="text-sm font-semibold">My Courses</p>
               <p className="text-xs text-muted-foreground">
-                {classes.length > 0 ? `${classes.length} saved` : "Add your timetable"}
+                {classes.length > 0 ? `${classes.length} saved` : "Choose your courses"}
               </p>
             </div>
             <ChevronRight className="size-4 text-muted-foreground" />

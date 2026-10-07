@@ -71,7 +71,7 @@ function Onboarding() {
       return;
     }
     toast.success("You're all set!");
-    navigate({ to: "/app", replace: true });
+    navigate({ to: "/app/classes", replace: true });
   }
 
   return (

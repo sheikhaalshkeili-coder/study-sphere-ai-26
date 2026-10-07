@@ -11,6 +11,7 @@ export type ClassRow = {
   day_of_week: number | null;
   start_time: string | null;
   end_time: string | null;
+  course_id: string | null;
 };
 
 export type AssignmentRow = {
@@ -46,9 +47,9 @@ export function useClasses() {
     queryFn: async (): Promise<ClassRow[]> => {
       const { data, error } = await supabase
         .from("classes")
-        .select("id, subject, teacher, room, color, day_of_week, start_time, end_time")
-        .order("day_of_week", { ascending: true })
-        .order("start_time", { ascending: true });
+        .select("id, subject, teacher, room, color, day_of_week, start_time, end_time, course_id")
+        .order("subject", { ascending: true })
+;
       if (error) throw error;
       return (data ?? []) as ClassRow[];
     },
@@ -604,5 +605,43 @@ export function useLogStudySession() {
       toast.success("Study session saved");
     },
     onError: (e: Error) => toast.error(e.message || "Couldn't save the session"),
+  });
+}
+
+const COURSE_COLORS = ["blue", "purple", "teal", "pink", "orange", "green"];
+
+/** Saves the student's selection of official courses (adds and removes rows by official course ID). */
+export function useSetCourses() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ add, remove }: { add: { id: string; name: string }[]; remove: string[] }) => {
+      const user_id = await requireUserId();
+      if (add.length) {
+        const { error } = await supabase.from("classes").insert(
+          add.map((c, i) => ({ user_id, course_id: c.id, subject: c.name, color: COURSE_COLORS[i % COURSE_COLORS.length] })),
+        );
+        if (error) throw error;
+      }
+      if (remove.length) {
+        const { error } = await supabase.from("classes").delete().eq("user_id", user_id).in("course_id", remove);
+        if (error) throw error;
+      }
+      // Keep the GEMS community in step with the courses the student takes.
+      const { data: p } = await supabase.from("profiles").select("gems_status").eq("id", user_id).maybeSingle();
+      if (p?.gems_status === "member") {
+        if (add.length) {
+          const { data: have } = await supabase.from("gems_enrollments").select("course_id").eq("user_id", user_id);
+          const set = new Set((have ?? []).map((r) => r.course_id));
+          const rows = add.filter((c) => !set.has(c.id)).map((c) => ({ user_id, course_id: c.id }));
+          if (rows.length) await supabase.from("gems_enrollments").insert(rows);
+        }
+        if (remove.length) await supabase.from("gems_enrollments").delete().eq("user_id", user_id).in("course_id", remove);
+      }
+    },
+    onSuccess: () => {
+      ["classes", "gems-enrollments", "assignments", "exams"].forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
+      toast.success("Your courses are saved");
+    },
+    onError: (e: Error) => toast.error(e.message || "Couldn't save your courses"),
   });
 }
