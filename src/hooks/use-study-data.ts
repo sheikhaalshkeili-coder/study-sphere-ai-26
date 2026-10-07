@@ -607,3 +607,36 @@ export function useLogStudySession() {
     onError: (e: Error) => toast.error(e.message || "Couldn't save the session"),
   });
 }
+
+const COURSE_COLORS = ["blue", "purple", "teal", "pink", "orange", "green"];
+
+/** Saves the student's selection of official courses (adds and removes rows by official course ID). */
+export function useSetCourses() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ add, remove }: { add: { id: string; name: string }[]; remove: string[] }) => {
+      const user_id = await requireUserId();
+      if (add.length) {
+        const { error } = await supabase.from("classes").insert(
+          add.map((c, i) => ({ user_id, course_id: c.id, subject: c.name, color: COURSE_COLORS[i % COURSE_COLORS.length] })),
+        );
+        if (error) throw error;
+      }
+      if (remove.length) {
+        const { error } = await supabase.from("classes").delete().eq("user_id", user_id).in("course_id", remove);
+        if (error) throw error;
+      }
+      // Keep the GEMS community in step with the courses the student takes.
+      const { data: p } = await supabase.from("profiles").select("gems_status").eq("id", user_id).maybeSingle();
+      if (p?.gems_status === "member") {
+        if (add.length) await supabase.from("gems_enrollments").upsert(add.map((c) => ({ user_id, course_id: c.id })), { onConflict: "user_id,course_id", ignoreDuplicates: true });
+        if (remove.length) await supabase.from("gems_enrollments").delete().eq("user_id", user_id).in("course_id", remove);
+      }
+    },
+    onSuccess: () => {
+      ["classes", "gems-enrollments", "assignments", "exams"].forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
+      toast.success("Your courses are saved");
+    },
+    onError: (e: Error) => toast.error(e.message || "Couldn't save your courses"),
+  });
+}
