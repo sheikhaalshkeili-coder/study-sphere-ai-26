@@ -629,7 +629,12 @@ export function useSetCourses() {
       // Keep the GEMS community in step with the courses the student takes.
       const { data: p } = await supabase.from("profiles").select("gems_status").eq("id", user_id).maybeSingle();
       if (p?.gems_status === "member") {
-        if (add.length) await supabase.from("gems_enrollments").upsert(add.map((c) => ({ user_id, course_id: c.id })), { onConflict: "user_id,course_id", ignoreDuplicates: true });
+        if (add.length) {
+          const { data: have } = await supabase.from("gems_enrollments").select("course_id").eq("user_id", user_id);
+          const set = new Set((have ?? []).map((r) => r.course_id));
+          const rows = add.filter((c) => !set.has(c.id)).map((c) => ({ user_id, course_id: c.id }));
+          if (rows.length) await supabase.from("gems_enrollments").insert(rows);
+        }
         if (remove.length) await supabase.from("gems_enrollments").delete().eq("user_id", user_id).in("course_id", remove);
       }
     },
