@@ -341,6 +341,77 @@ export type Database = {
           },
         ]
       }
+      learn_sessions: {
+        Row: {
+          class_id: string | null
+          completed_at: string | null
+          completed_steps: number
+          course_id: string | null
+          course_name: string
+          created_at: string
+          current_step: number
+          id: string
+          lesson_title: string
+          materials: Json
+          questions_answered: number
+          questions_correct: number
+          review_concepts: string[]
+          steps: Json
+          topic: string
+          total_steps: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class_id?: string | null
+          completed_at?: string | null
+          completed_steps?: number
+          course_id?: string | null
+          course_name?: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          lesson_title?: string
+          materials?: Json
+          questions_answered?: number
+          questions_correct?: number
+          review_concepts?: string[]
+          steps?: Json
+          topic: string
+          total_steps?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string | null
+          completed_at?: string | null
+          completed_steps?: number
+          course_id?: string | null
+          course_name?: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          lesson_title?: string
+          materials?: Json
+          questions_answered?: number
+          questions_correct?: number
+          review_concepts?: string[]
+          steps?: Json
+          topic?: string
+          total_steps?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learn_sessions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           class_id: string | null
@@ -392,6 +463,7 @@ export type Database = {
           gems_verified: boolean
           grade_year: string | null
           id: string
+          leaderboard_visible: boolean
           school_name: string | null
           updated_at: string
         }
@@ -409,6 +481,7 @@ export type Database = {
           gems_verified?: boolean
           grade_year?: string | null
           id: string
+          leaderboard_visible?: boolean
           school_name?: string | null
           updated_at?: string
         }
@@ -426,6 +499,7 @@ export type Database = {
           gems_verified?: boolean
           grade_year?: string | null
           id?: string
+          leaderboard_visible?: boolean
           school_name?: string | null
           updated_at?: string
         }
@@ -600,6 +674,19 @@ export type Database = {
       }
       is_enrolled: { Args: { _course: string; _uid: string }; Returns: boolean }
       is_gems_member: { Args: { _uid: string }; Returns: boolean }
+      school_leaderboard: {
+        Args: { _period: string }
+        Returns: {
+          avatar_url: string
+          is_me: boolean
+          lessons: number
+          name: string
+          questions: number
+          score: number
+          sessions: number
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       education_level: "high_school" | "university"
