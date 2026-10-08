@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiLearnRouteImport } from './routes/api/learn'
 import { Route as ApiQuizRouteImport } from './routes/api/quiz'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -60,6 +61,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLearnRoute = ApiLearnRouteImport.update({
+  id: '/api/learn',
+  path: '/api/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiQuizRoute = ApiQuizRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/learn': typeof ApiLearnRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/learn': typeof ApiLearnRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/learn': typeof ApiLearnRoute
   '/api/quiz': typeof ApiQuizRoute
   '/api/tutor': typeof ApiTutorRoute
   '/app/ai': typeof AppAiRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/api/chat'
+    | '/api/learn'
     | '/api/quiz'
     | '/api/tutor'
     | '/app/ai'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/api/chat'
+    | '/api/learn'
     | '/api/quiz'
     | '/api/tutor'
     | '/app/ai'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/api/chat'
+    | '/api/learn'
     | '/api/quiz'
     | '/api/tutor'
     | '/app/ai'
@@ -296,6 +308,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiLearnRoute: typeof ApiLearnRoute
   ApiQuizRoute: typeof ApiQuizRoute
   ApiTutorRoute: typeof ApiTutorRoute
   ApiVoiceSpeakRoute: typeof ApiVoiceSpeakRoute
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/api/chat'
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/learn': {
+      id: '/api/learn'
+      path: '/api/learn'
+      fullPath: '/api/learn'
+      preLoaderRoute: typeof ApiLearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/quiz': {
@@ -500,6 +520,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiLearnRoute: ApiLearnRoute,
   ApiQuizRoute: ApiQuizRoute,
   ApiTutorRoute: ApiTutorRoute,
   ApiVoiceSpeakRoute: ApiVoiceSpeakRoute,
