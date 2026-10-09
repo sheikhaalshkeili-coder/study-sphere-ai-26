@@ -22,6 +22,7 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAiRouteImport } from './routes/app.ai'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppGradesRouteImport } from './routes/app.grades'
+import { Route as AppLearnRouteImport } from './routes/app.learn'
 import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
 import { Route as AppPlannerRouteImport } from './routes/app.planner'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
@@ -98,6 +99,11 @@ const AppGradesRoute = AppGradesRouteImport.update({
   path: '/grades',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLearnRoute = AppLearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppOnboardingRoute = AppOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/grades': typeof AppGradesRoute
+  '/app/learn': typeof AppLearnRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/grades': typeof AppGradesRoute
+  '/app/learn': typeof AppLearnRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/app/ai': typeof AppAiRoute
   '/app/classes': typeof AppClassesRoute
   '/app/grades': typeof AppGradesRoute
+  '/app/learn': typeof AppLearnRoute
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/planner': typeof AppPlannerRoute
   '/app/profile': typeof AppProfileRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/app/ai'
     | '/app/classes'
     | '/app/grades'
+    | '/app/learn'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/app/ai'
     | '/app/classes'
     | '/app/grades'
+    | '/app/learn'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/app/ai'
     | '/app/classes'
     | '/app/grades'
+    | '/app/learn'
     | '/app/onboarding'
     | '/app/planner'
     | '/app/profile'
@@ -408,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGradesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/learn': {
+      id: '/app/learn'
+      path: '/learn'
+      fullPath: '/app/learn'
+      preLoaderRoute: typeof AppLearnRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/onboarding': {
       id: '/app/onboarding'
       path: '/onboarding'
@@ -485,6 +504,7 @@ interface AppRouteChildren {
   AppAiRoute: typeof AppAiRoute
   AppClassesRoute: typeof AppClassesRoute
   AppGradesRoute: typeof AppGradesRoute
+  AppLearnRoute: typeof AppLearnRoute
   AppOnboardingRoute: typeof AppOnboardingRoute
   AppPlannerRoute: typeof AppPlannerRoute
   AppProfileRoute: typeof AppProfileRoute
@@ -500,6 +520,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAiRoute: AppAiRoute,
   AppClassesRoute: AppClassesRoute,
   AppGradesRoute: AppGradesRoute,
+  AppLearnRoute: AppLearnRoute,
   AppOnboardingRoute: AppOnboardingRoute,
   AppPlannerRoute: AppPlannerRoute,
   AppProfileRoute: AppProfileRoute,
