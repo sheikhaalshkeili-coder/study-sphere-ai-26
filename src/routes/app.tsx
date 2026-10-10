@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { Home, CalendarDays, Sparkles, BookOpen, User } from "lucide-react";
+import { Home, GraduationCap, CalendarDays, Sparkles, BookOpen, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/app")({
 
 
 type Tab = {
-  to: "/app" | "/app/planner" | "/app/ai" | "/app/study" | "/app/profile";
+  to: "/app" | "/app/learn" | "/app/planner" | "/app/ai" | "/app/study" | "/app/profile";
   label: string;
   icon: typeof Home;
   exact?: boolean;
@@ -34,6 +34,7 @@ type Tab = {
 
 const tabs: Tab[] = [
   { to: "/app", label: "Home", icon: Home, exact: true },
+  { to: "/app/learn", label: "Learn", icon: GraduationCap },
   { to: "/app/planner", label: "Planner", icon: CalendarDays },
   { to: "/app/ai", label: "AI", icon: Sparkles, primary: true },
   { to: "/app/study", label: "Study", icon: BookOpen },
