@@ -350,6 +350,8 @@ export type Database = {
           course_name: string
           created_at: string
           current_step: number
+          curriculum_unit: string
+          ib_level: string
           id: string
           lesson_title: string
           materials: Json
@@ -370,6 +372,8 @@ export type Database = {
           course_name?: string
           created_at?: string
           current_step?: number
+          curriculum_unit?: string
+          ib_level?: string
           id?: string
           lesson_title?: string
           materials?: Json
@@ -390,6 +394,8 @@ export type Database = {
           course_name?: string
           created_at?: string
           current_step?: number
+          curriculum_unit?: string
+          ib_level?: string
           id?: string
           lesson_title?: string
           materials?: Json

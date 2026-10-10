@@ -1,0 +1,1 @@
+ALTER TABLE public.learn_sessions ADD COLUMN IF NOT EXISTS curriculum_unit text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS ib_level text NOT NULL DEFAULT '';
